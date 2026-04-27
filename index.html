@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>&#214;&#287;retmen Paneli ? Kamu Ekonomisi: Siyasi S&#252;re&#231;</title>
+<title>Öğretmen Paneli ? Kamu Ekonomisi: Siyasi Süreç</title>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -23,7 +23,7 @@
 
   .layout{display:grid;grid-template-columns:320px 1fr 260px;height:calc(100vh - 48px);}
 
-  /* SOL: Soru seti edit&#246;r&#252; */
+  /* SOL: Soru seti editörü */
   .sol{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--surface);}
   .sol-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
   .sol-baslik{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
@@ -45,7 +45,7 @@
   .btn-basla-set:hover{background:#a83825;}
   .btn-basla-set:disabled{background:var(--muted);cursor:default;}
 
-  /* ORTA: Aktif soru g&#246;rselle&#351;tirme */
+  /* ORTA: Aktif soru görselleştirme */
   .orta{display:flex;flex-direction:column;overflow:hidden;}
   .orta-header{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;}
   .soru-nav{display:flex;align-items:center;gap:10px;}
@@ -113,7 +113,7 @@
   .rsi-soru{font-size:12px;font-weight:600;margin-bottom:4px;}
   .rsi-ozet{font-size:11px;color:var(--muted);line-height:1.5;}
 
-  /* SA&#286;: Sidebar */
+  /* SAĞ: Sidebar */
   .sag{border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--surface);}
   .sb-bolum{padding:12px 14px;border-bottom:1px solid var(--border);}
   .sb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600;margin-bottom:8px;}
@@ -124,7 +124,7 @@
   .resp-name{font-weight:600;color:var(--accent2);}
   .resp-text{color:var(--ink);margin-top:1px;font-size:10px;}
 
-  /* Soru edit&#246;r&#252; modal */
+  /* Soru editörü modal */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;}
   .modal-overlay.acik{display:flex;}
   .modal{background:white;border-radius:16px;padding:24px;width:480px;max-height:80vh;overflow-y:auto;}
@@ -155,7 +155,7 @@
 </head>
 <body>
 <header>
-  <h1>&#214;&#287;retmen Paneli ? Kamu Ekonomisi: Siyasi S&#252;re&#231;</h1>
+  <h1>Öğretmen Paneli ? Kamu Ekonomisi: Siyasi Süreç</h1>
   <div class="live-b"><div class="dot off" id="liveDot"></div><span id="liveStatus">Bekleniyor</span></div>
 </header>
 
@@ -167,10 +167,10 @@
       <button class="btn-yeni-soru" onclick="yeniSoruModal()">+ Soru Ekle</button>
     </div>
     <div class="soru-listesi" id="soruListesi">
-      <div style="text-align:center;padding:30px 16px;color:var(--muted);font-size:13px;">Hen&#252;z soru eklenmedi.<br>+ Soru Ekle butonuna t&#305;klay&#305;n.</div>
+      <div style="text-align:center;padding:30px 16px;color:var(--muted);font-size:13px;">Henüz soru eklenmedi.<br>+ Soru Ekle butonuna tıklayın.</div>
     </div>
     <div class="sol-footer">
-      <button class="btn-basla-set" id="btnBasla" onclick="oturumBaslat()" disabled>? Oturumu Ba&#351;lat</button>
+      <button class="btn-basla-set" id="btnBasla" onclick="oturumBaslat()" disabled>? Oturumu Başlat</button>
     </div>
   </div>
 
@@ -180,7 +180,7 @@
       <div class="soru-nav">
         <button class="btn-nav" id="btnGeri" onclick="soruDegistir(-1)" disabled>? Geri</button>
         <span class="soru-ilerleme" id="soruIlerleme">1 / 1</span>
-        <button class="btn-nav ileri" id="btnIleri" onclick="soruDegistir(1)">&#304;leri ?</button>
+        <button class="btn-nav ileri" id="btnIleri" onclick="soruDegistir(1)">İleri ?</button>
       </div>
       <div class="nav-aksiyonlar">
         <button class="btn-kucuk analiz" id="btnAnaliz" onclick="analizYap()" disabled>? Analiz</button>
@@ -192,7 +192,7 @@
     <div class="orta-icerik" id="ortaIcerik">
       <div class="bos-ekran">
         <div class="bos-ekran-ikon">?</div>
-        <div class="bos-ekran-text">Sol taraftan sorular&#305;n&#305;z&#305; ekleyin,<br>ard&#305;ndan oturumu ba&#351;lat&#305;n.</div>
+        <div class="bos-ekran-text">Sol taraftan sorularınızı ekleyin,<br>ardından oturumu başlatın.</div>
       </div>
     </div>
   </div>
@@ -200,11 +200,11 @@
   <!-- SA?: Sidebar -->
   <div class="sag">
     <div class="sb-bolum">
-      <div class="sb-label">&#214;&#287;renci Ba&#287;lant&#305;s&#305;</div>
+      <div class="sb-label">Öğrenci Bağlantısı</div>
       <div id="qrCanvas"></div>
       <div class="join-url" id="joinUrl"></div>
     </div>
-    <div class="sb-label" style="padding:10px 14px 4px">Son Yan&#305;tlar</div>
+    <div class="sb-label" style="padding:10px 14px 4px">Son Yanıtlar</div>
     <div class="resp-list" id="respList"></div>
   </div>
 </div>
@@ -216,24 +216,24 @@
       <span id="modalBaslikText">Yeni Soru</span>
       <button class="modal-kapat" onclick="modalKapat()">?</button>
     </div>
-    <div class="m-label">Soru T&#252;r&#252;</div>
+    <div class="m-label">Soru Türü</div>
     <div class="tip-grid-m">
-      <button class="tip-btn-m aktif" onclick="mTipSec('tanim',this)"><span class="tip-emoji-m">??</span>Tan&#305;m Yaz</button>
-      <button class="tip-btn-m" onclick="mTipSec('yoklama',this)"><span class="tip-emoji-m">?</span>Anlama Kontrol&#252;</button>
-      <button class="tip-btn-m" onclick="mTipSec('secmeli',this)"><span class="tip-emoji-m">?</span>&#199;oktan Se&#231;meli</button>
-      <button class="tip-btn-m" onclick="mTipSec('siralama',this)"><span class="tip-emoji-m">??</span>S&#305;ralama</button>
-      <button class="tip-btn-m" onclick="mTipSec('cagrisim',this)"><span class="tip-emoji-m">?</span>Kelime &#199;a&#287;r&#305;&#351;&#305;m&#305;</button>
-      <button class="tip-btn-m" onclick="mTipSec('yansima',this)"><span class="tip-emoji-m">?</span>Ders Sonu Yans&#305;ma</button>
+      <button class="tip-btn-m aktif" onclick="mTipSec('tanim',this)"><span class="tip-emoji-m">??</span>Tanım Yaz</button>
+      <button class="tip-btn-m" onclick="mTipSec('yoklama',this)"><span class="tip-emoji-m">?</span>Anlama Kontrolü</button>
+      <button class="tip-btn-m" onclick="mTipSec('secmeli',this)"><span class="tip-emoji-m">?</span>Çoktan Seçmeli</button>
+      <button class="tip-btn-m" onclick="mTipSec('siralama',this)"><span class="tip-emoji-m">??</span>Sıralama</button>
+      <button class="tip-btn-m" onclick="mTipSec('cagrisim',this)"><span class="tip-emoji-m">?</span>Kelime Çağrışımı</button>
+      <button class="tip-btn-m" onclick="mTipSec('yansima',this)"><span class="tip-emoji-m">?</span>Ders Sonu Yansıma</button>
     </div>
     <div class="m-label">Soru Metni</div>
     <textarea class="m-input" id="mSoruText" rows="3" placeholder="Soruyu yaz?n..."></textarea>
     <div id="mSeceneklerAlan" style="display:none">
-      <div class="m-label">Se&#231;enekler</div>
+      <div class="m-label">Seçenekler</div>
       <div id="mSeceneklerListe"></div>
-      <button class="btn-secenek-ekle-m" onclick="mSecenekEkle()">+ Se&#231;enek ekle</button>
+      <button class="btn-secenek-ekle-m" onclick="mSecenekEkle()">+ Seçenek ekle</button>
     </div>
     <div class="modal-footer">
-      <button class="btn-modal-iptal" onclick="modalKapat()">&#304;ptal</button>
+      <button class="btn-modal-iptal" onclick="modalKapat()">İptal</button>
       <button class="btn-modal-kaydet" onclick="soruKaydet()">Kaydet</button>
     </div>
   </div>
@@ -253,10 +253,10 @@ let mSecenekler=[];
 let duzenleIdx=-1;
 let oturumBasladi=false;
 
-const TIP_LABEL={tanim:'Tan&#305;m Yaz',yoklama:'Anlama Kontrol&#252;',secmeli:'&#199;oktan Se&#231;meli',siralama:'S&#305;ralama',cagrisim:'Kelime &#199;a&#287;r&#305;&#351;&#305;m&#305;',yansima:'Ders Sonu Yans&#305;ma'};
+const TIP_LABEL={tanim:'Tanım Yaz',yoklama:'Anlama Kontrolü',secmeli:'Çoktan Seçmeli',siralama:'Sıralama',cagrisim:'Kelime Çağrışımı',yansima:'Ders Sonu Yansıma'};
 const COLORS=[{bg:'#c84b31',c:'#fff'},{bg:'#2d6a4f',c:'#fff'},{bg:'#457b9d',c:'#fff'},{bg:'#e9c46a',c:'#1a1a2e'},{bg:'#264653',c:'#fff'},{bg:'#e76f51',c:'#fff'},{bg:'#2a9d8f',c:'#fff'},{bg:'#f4a261',c:'#1a1a2e'},{bg:'#6d6875',c:'#fff'},{bg:'#b5838d',c:'#fff'}];
 const BAR_COLORS=['#c84b31','#2d6a4f','#457b9d','#e9a227','#6d6875','#2a9d8f'];
-const STOP=new Set(['ve','bir','bu','da','de','ile','i&#231;in','ama','&#231;ok','daha','ne','gibi','kadar','sonra','&#246;nce','her','hi&#231;','ki','mi','mu','m&#252;','m&#305;','ise','ya','hem','veya','sadece','bile','yani','ancak','fakat','oysa','e&#287;er','&#231;&#252;nk&#252;','nas&#305;l','neden','zaman','olarak','oldu&#287;u','olan','taraf&#305;ndan','devlet','vergi']);
+const STOP=new Set(['ve','bir','bu','da','de','ile','için','ama','çok','daha','ne','gibi','kadar','sonra','önce','her','hiç','ki','mi','mu','mü','mı','ise','ya','hem','veya','sadece','bile','yani','ancak','fakat','oysa','eğer','çünkü','nasıl','neden','zaman','olarak','olduğu','olan','tarafından','devlet','vergi']);
 
 window.onload=()=>{
   try{const app=firebase.initializeApp(FB,'ogretmen-app');db=firebase.database(app);}
@@ -265,105 +265,105 @@ window.onload=()=>{
   responsesRef=db.ref('responses');
   new QRCode(document.getElementById('qrCanvas'),{text:STUDENT_URL,width:170,height:170,colorDark:'#1a1a2e',colorLight:'#f5f0e8'});
   document.getElementById('joinUrl').textContent=STUDENT_URL;
-  // Varsay&#305;lan 5 soru y&#252;kle
+  // Varsayılan 5 soru yükle
   varsayilanSorular();
 };
 
 function varsayilanSorular(){
   sorular=[
 
-    // --- A&#199;ILI&#350;: &#214;&#287;renciyi i&#231;ine &#231;ek ---
+    // --- AÇILIŞ: Öğrenciyi içine çek ---
     {
-      soru: 'Bu ay KYK bursundan / kredisinden ka&#231; TL ald&#305;n? (Alm&#305;yorsan 0 yaz)',
+      soru: 'Bu ay KYK bursundan / kredisinden kaç TL aldın? (Almıyorsan 0 yaz)',
       tip: 'tanim'
     },
 
     // --- SORU 2: Kim karar verdi? ---
     {
-      soru: 'Sence o rakam&#305; kim belirledi?',
+      soru: 'Sence o rakamı kim belirledi?',
       tip: 'secmeli',
       secenekler: [
-        'Y&#214;K (Y&#252;ksek&#246;&#287;retim Kurulu)',
-        '&#220;niversite y&#246;netimi',
-        'Bakanlar Kurulu / Cumhurba&#351;kanl&#305;&#287;&#305; kararnamesi',
+        'YÖK (Yükseköğretim Kurulu)',
+        'Üniversite yönetimi',
+        'Bakanlar Kurulu / Cumhurbaşkanlığı kararnamesi',
         'Bilmiyorum'
       ]
     },
 
-    // --- SORU 3: Normatif beklenti ? dersin sonunda tekrar a&#231;&#305;lacak ---
+    // --- SORU 3: Normatif beklenti ? dersin sonunda tekrar açılacak ---
     {
-      soru: 'Sence iyi bir politikac&#305; karar al&#305;rken neye &#246;ncelik vermeli?',
+      soru: 'Sence iyi bir politikacı karar alırken neye öncelik vermeli?',
       tip: 'secmeli',
       secenekler: [
-        'Se&#231;menin k&#305;sa vadeli taleplerini kar&#351;&#305;lamak',
-        '&#220;lkenin uzun vadeli &#231;&#305;kar&#305;n&#305; g&#246;zetmek',
-        'Parti program&#305;n&#305; uygulamak',
-        'Uzman g&#246;r&#252;&#351;lerine uymak'
+        'Seçmenin kısa vadeli taleplerini karşılamak',
+        'Ülkenin uzun vadeli çıkarını gözetmek',
+        'Parti programını uygulamak',
+        'Uzman görüşlerine uymak'
       ]
     },
 
-    // --- SORU 4: Siyasi s&#252;re&#231; sezgisi ---
+    // --- SORU 4: Siyasi süreç sezgisi ---
     {
-      soru: '"Devlet karar&#305;" denince akl&#305;na ilk gelen 3 kelimeyi yaz',
+      soru: '"Devlet kararı" denince aklına ilk gelen 3 kelimeyi yaz',
       tip: 'cagrisim'
     },
 
-    // --- SORU 5: Se&#231;im-b&#252;t&#231;e ba&#287;lant&#305;s&#305; ---
+    // --- SORU 5: Seçim-bütçe bağlantısı ---
     {
-      soru: 'Se&#231;im y&#305;llar&#305;nda KYK miktar&#305; artar m&#305;?',
+      soru: 'Seçim yıllarında KYK miktarı artar mı?',
       tip: 'secmeli',
       secenekler: [
-        'Evet, se&#231;im &#246;ncesi mutlaka artar',
-        'Hay&#305;r, siyasetle ilgisi yok',
-        'Bazen artar, tesad&#252;f de&#287;il',
-        'Hi&#231; d&#252;&#351;&#252;nmemi&#351;tim'
+        'Evet, seçim öncesi mutlaka artar',
+        'Hayır, siyasetle ilgisi yok',
+        'Bazen artar, tesadüf değil',
+        'Hiç düşünmemiştim'
       ]
     },
 
-    // --- SORU 6: Akt&#246;rler ? politikac&#305;n&#305;n g&#252;d&#252;s&#252; ---
+    // --- SORU 6: Aktörler ? politikacının güdüsü ---
     {
-      soru: 'Bir politikac&#305; 4 y&#305;l sonra se&#231;ilmek istiyorsa, hangi karar&#305; al&#305;r?',
+      soru: 'Bir politikacı 4 yıl sonra seçilmek istiyorsa, hangi kararı alır?',
       tip: 'secmeli',
       secenekler: [
-        '10 y&#305;l sonra faydal&#305; ama &#351;imdi maliyetli olan karar&#305;',
-        'Hemen fark edilecek, pop&#252;ler karar&#305;',
-        'Uzmanlar&#305;n &#246;nerdi&#287;i teknik karar&#305;',
-        'Her iki karar&#305; da dengeler'
+        '10 yıl sonra faydalı ama şimdi maliyetli olan kararı',
+        'Hemen fark edilecek, popüler kararı',
+        'Uzmanların önerdiği teknik kararı',
+        'Her iki kararı da dengeler'
       ]
     },
 
-    // --- SORU 7: B&#252;rokrat g&#252;d&#252;s&#252; ---
+    // --- SORU 7: Bürokrat güdüsü ---
     {
-      soru: 'Bir bakanl&#305;k, b&#252;t&#231;esi k&#305;s&#305;laca&#287;&#305;n&#305; &#246;&#287;renirse ne yapar?',
+      soru: 'Bir bakanlık, bütçesi kısılacağını öğrenirse ne yapar?',
       tip: 'secmeli',
       secenekler: [
-        'Verimlilik i&#231;in kendi b&#252;t&#231;esini g&#246;n&#252;ll&#252; k&#305;sar',
-        'Di&#287;er bakanl&#305;klar&#305;n k&#305;s&#305;lmas&#305;n&#305; savunur',
-        'B&#252;t&#231;esini savunmak i&#231;in lobi yapar',
-        'Durumu kamuoyuyla payla&#351;&#305;r'
+        'Verimlilik için kendi bütçesini gönüllü kısar',
+        'Diğer bakanlıkların kısılmasını savunur',
+        'Bütçesini savunmak için lobi yapar',
+        'Durumu kamuoyuyla paylaşır'
       ]
     },
 
-    // --- SORU 8: Se&#231;menin rol&#252; ? kritik ba&#287;lant&#305; ---
+    // --- SORU 8: Seçmenin rolü ? kritik bağlantı ---
     {
-      soru: 'Sen hi&#231; oy kulland&#305;n m&#305; ya da kullanmay&#305; d&#252;&#351;&#252;n&#252;yor musun?',
+      soru: 'Sen hiç oy kullandın mı ya da kullanmayı düşünüyor musun?',
       tip: 'yoklama',
       secenekler: [
-        {emoji:'?', metin:'Evet, kulland&#305;m / kullanaca&#287;&#305;m'},
-        {emoji:'?', metin:'D&#252;&#351;&#252;n&#252;yorum ama karars&#305;z&#305;m'},
-        {emoji:'?', metin:'Hay&#305;r, gerek g&#246;rm&#252;yorum'}
+        {emoji:'?', metin:'Evet, kullandım / kullanacağım'},
+        {emoji:'?', metin:'Düşünüyorum ama kararsızım'},
+        {emoji:'?', metin:'Hayır, gerek görmüyorum'}
       ]
     },
 
-    // --- SORU 9: Ba&#287;lant&#305;y&#305; kur ---
+    // --- SORU 9: Bağlantıyı kur ---
     {
-      soru: 'KYK miktar&#305; ile oy kullanmak aras&#305;nda bir ba&#287;lant&#305; var m&#305;?',
+      soru: 'KYK miktarı ile oy kullanmak arasında bir bağlantı var mı?',
       tip: 'tanim'
     },
 
-    // --- SORU 10: Ders sonu yans&#305;ma ? normatif soruya d&#246;n&#252;&#351; ---
+    // --- SORU 10: Ders sonu yansıma ? normatif soruya dönüş ---
     {
-      soru: 'Dersin ba&#351;&#305;nda "iyi politikac&#305; uzun vadeyi g&#246;zetmeli" dedin. Peki neden politikac&#305;lar &#231;o&#287;unlukla k&#305;sa vadeyi se&#231;iyor? Bir c&#252;mleyle a&#231;&#305;kla.',
+      soru: 'Dersin başında "iyi politikacı uzun vadeyi gözetmeli" dedin. Peki neden politikacılar çoğunlukla kısa vadeyi seçiyor? Bir cümleyle açıkla.',
       tip: 'yansima'
     },
 
@@ -375,7 +375,7 @@ function renderSoruListesi(){
   const liste=document.getElementById('soruListesi');
   document.getElementById('soruSayac').textContent='('+sorular.length+')';
   document.getElementById('btnBasla').disabled=sorular.length===0;
-  if(!sorular.length){liste.innerHTML='<div style="text-align:center;padding:30px 16px;color:var(--muted);font-size:13px;">Hen&#252;z soru eklenmedi.<br>+ Soru Ekle butonuna t&#305;klay&#305;n.</div>';return;}
+  if(!sorular.length){liste.innerHTML='<div style="text-align:center;padding:30px 16px;color:var(--muted);font-size:13px;">Henüz soru eklenmedi.<br>+ Soru Ekle butonuna tıklayın.</div>';return;}
   liste.innerHTML=sorular.map((s,i)=>`
     <div class="soru-kart-mini ${oturumBasladi&&i===aktifSoruIdx?'aktif':''} ${oturumBasladi&&i<aktifSoruIdx?'gonderildi':''}" onclick="${oturumBasladi?'soruSec('+i+')':''}">
       <div class="skm-ust">
@@ -392,7 +392,7 @@ function yeniSoruModal(idx=-1){
   duzenleIdx=idx;
   mTip=idx>=0?sorular[idx].tip:'tanim';
   mSecenekler=idx>=0?(sorular[idx].secenekler||sorular[idx].siralama_ogeleri||[]).map(s=>typeof s==='object'?s.emoji+' '+s.metin:s):[];
-  document.getElementById('modalBaslikText').textContent=idx>=0?'Soruyu D&#252;zenle':'Yeni Soru';
+  document.getElementById('modalBaslikText').textContent=idx>=0?'Soruyu Düzenle':'Yeni Soru';
   document.getElementById('mSoruText').value=idx>=0?sorular[idx].soru:'';
   document.querySelectorAll('.tip-btn-m').forEach(b=>b.classList.remove('aktif'));
   document.querySelectorAll('.tip-btn-m').forEach(b=>{if(b.textContent.includes(TIP_LABEL[mTip]?.slice(0,5)))b.classList.add('aktif');});
@@ -406,8 +406,8 @@ function mTipSec(tip,el){
   document.querySelectorAll('.tip-btn-m').forEach(b=>b.classList.remove('aktif'));
   el.classList.add('aktif');
   const varsayilanSecenekler={
-    yoklama:['? Anlad&#305;m, a&#231;&#305;klayabilirim','? K&#305;smen anlad&#305;m','? Anlamad&#305;m'],
-    secmeli:['Se&#231;enek A','Se&#231;enek B','Se&#231;enek C','Se&#231;enek D'],
+    yoklama:['? Anladım, açıklayabilirim','? Kısmen anladım','? Anlamadım'],
+    secmeli:['Seçenek A','Seçenek B','Seçenek C','Seçenek D'],
     siralama:['Madde 1','Madde 2','Madde 3','Madde 4']
   };
   if(mSecenekler.length===0&&varsayilanSecenekler[tip]) mSecenekler=[...varsayilanSecenekler[tip]];
@@ -424,11 +424,11 @@ function mSeceneklerRender(){
       <button class="secenek-sil-btn" onclick="mSecenekSil(${i})">?</button>
     </div>`).join('');
 }
-function mSecenekEkle(){mSecenekler.push('Yeni se&#231;enek');mSeceneklerRender();}
+function mSecenekEkle(){mSecenekler.push('Yeni seçenek');mSeceneklerRender();}
 function mSecenekSil(i){mSecenekler.splice(i,1);mSeceneklerRender();}
 function soruKaydet(){
   const soru=document.getElementById('mSoruText').value.trim();
-  if(!soru){alert('Soru metni yaz&#305;n.');return;}
+  if(!soru){alert('Soru metni yazın.');return;}
   const obj={soru,tip:mTip};
   if(mTip==='yoklama'){obj.secenekler=mSecenekler.map(s=>{const p=s.split(' ');return{emoji:p[0],metin:p.slice(1).join(' ')};});}
   else if(mTip==='secmeli'){obj.secenekler=[...mSecenekler];}
@@ -445,12 +445,12 @@ function oturumBaslat(){
   oturumBasladi=true;
   aktifSoruIdx=0;
   const oturumId='oturum_'+Date.now();
-  const sessionData={active:true,oturumId,sorular,soruIdx:0,baslik:'Derse Kat&#305;l',question:sorular[0].soru,tip:sorular[0].tip};
+  const sessionData={active:true,oturumId,sorular,soruIdx:0,baslik:'Derse Katıl',question:sorular[0].soru,tip:sorular[0].tip};
   if(sorular[0].secenekler)sessionData.secenekler=sorular[0].secenekler;
   if(sorular[0].siralama_ogeleri)sessionData.siralama_ogeleri=sorular[0].siralama_ogeleri;
   sessionRef.set(sessionData);
   document.getElementById('liveDot').className='dot';
-  document.getElementById('liveStatus').textContent='Canl&#305;';
+  document.getElementById('liveStatus').textContent='Canlı';
   document.getElementById('ortaHeader').style.display='flex';
   renderSoruListesi();
   soruGoster(0);
@@ -504,22 +504,22 @@ function renderSoruGorsel(){
   const s=sorular[aktifSoruIdx];
   if(!s)return;
   const yanit=aktifYanitlar();
-  // &#304;&#231;eri&#287;i yeniden &#231;iz
+  // İçeriği yeniden çiz
   let html=`<div>
     <div class="aktif-tip-badge">${TIP_LABEL[s.tip]||s.tip}</div>
     <div class="aktif-soru-goster">${escHtml(s.soru)}</div>
   </div>
   <div class="stats-row">
-    <div class="stat"><div class="stat-n" id="sYanit">${yanit.length}</div><div class="stat-l">yan&#305;t</div></div>
-    <div class="stat"><div class="stat-n" id="sUniq">${Object.keys(aktifKelimeler()).length}</div><div class="stat-l">farkl&#305; kelime</div></div>
-    <div class="stat"><div class="stat-n" id="sTop">${(()=>{const e=Object.entries(aktifKelimeler()).sort((a,b)=>b[1]-a[1])[0];return e?e[0]:'?';})()}</div><div class="stat-l">en &#231;ok</div></div>
+    <div class="stat"><div class="stat-n" id="sYanit">${yanit.length}</div><div class="stat-l">yanıt</div></div>
+    <div class="stat"><div class="stat-n" id="sUniq">${Object.keys(aktifKelimeler()).length}</div><div class="stat-l">farklı kelime</div></div>
+    <div class="stat"><div class="stat-n" id="sTop">${(()=>{const e=Object.entries(aktifKelimeler()).sort((a,b)=>b[1]-a[1])[0];return e?e[0]:'?';})()}</div><div class="stat-l">en çok</div></div>
   </div>
-  <div class="gorsel-kutu"><div class="gorsel-baslik" id="gBaslik">Canl&#305; Sonu&#231;lar</div><div id="gIcerik"></div></div>
+  <div class="gorsel-kutu"><div class="gorsel-baslik" id="gBaslik">Canlı Sonuçlar</div><div id="gIcerik"></div></div>
   <div class="analiz-panel" id="analizPanel">
-    <div class="ap-bolum"><div class="ap-label">Alg&#305; Tonu</div><div class="ton-bar"><div class="ton-s" id="tYuk" style="background:#c84b31;width:0%"></div><div class="ton-s" id="tNotr" style="background:#8a8070;width:0%"></div><div class="ton-s" id="tFayda" style="background:#2d6a4f;width:0%"></div></div><div style="display:flex;gap:12px;margin-top:5px;font-size:10px;color:var(--muted);">? <span id="tYP">0%</span> Y&#252;k &nbsp; ? <span id="tNP">0%</span> N&#246;tr &nbsp; ? <span id="tFP">0%</span> Fayda</div></div>
-    <div class="ap-bolum"><div class="ap-label">Alg&#305; Pusulas&#305;</div><div class="radar-wrap"><canvas id="radarChart" width="260" height="220"></canvas></div></div>
-    <div class="ap-bolum"><div class="ap-label">Kavram &#199;er&#231;eveleri</div><div class="cerceve-grid"><div class="ck eko"><div class="cb">Ekonomik</div><div class="cn" id="cEko">?</div><div class="co" id="cEkoO">?</div></div><div class="ck huk"><div class="cb">Hukuki</div><div class="cn" id="cHuk">?</div><div class="co" id="cHukO">?</div></div><div class="ck gun"><div class="cb">G&#252;nl&#252;k</div><div class="cn" id="cGun">?</div><div class="co" id="cGunO">?</div></div></div></div>
-    <div class="ap-bolum" id="yanlisBlok" style="display:none"><div class="ap-label">?? Kavram Yan&#305;lg&#305;lar&#305;</div><div id="yanlisList"></div></div>
+    <div class="ap-bolum"><div class="ap-label">Algı Tonu</div><div class="ton-bar"><div class="ton-s" id="tYuk" style="background:#c84b31;width:0%"></div><div class="ton-s" id="tNotr" style="background:#8a8070;width:0%"></div><div class="ton-s" id="tFayda" style="background:#2d6a4f;width:0%"></div></div><div style="display:flex;gap:12px;margin-top:5px;font-size:10px;color:var(--muted);">? <span id="tYP">0%</span> Yük &nbsp; ? <span id="tNP">0%</span> Nötr &nbsp; ? <span id="tFP">0%</span> Fayda</div></div>
+    <div class="ap-bolum"><div class="ap-label">Algı Pusulası</div><div class="radar-wrap"><canvas id="radarChart" width="260" height="220"></canvas></div></div>
+    <div class="ap-bolum"><div class="ap-label">Kavram Çerçeveleri</div><div class="cerceve-grid"><div class="ck eko"><div class="cb">Ekonomik</div><div class="cn" id="cEko">?</div><div class="co" id="cEkoO">?</div></div><div class="ck huk"><div class="cb">Hukuki</div><div class="cn" id="cHuk">?</div><div class="co" id="cHukO">?</div></div><div class="ck gun"><div class="cb">Günlük</div><div class="cn" id="cGun">?</div><div class="co" id="cGunO">?</div></div></div></div>
+    <div class="ap-bolum" id="yanlisBlok" style="display:none"><div class="ap-label">?? Kavram Yanılgıları</div><div id="yanlisList"></div></div>
     <div class="ped-kutu"><div style="font-size:10px;font-weight:700;color:#2d6a4f;margin-bottom:5px;">? Pedagojik Not</div><div id="pedMetin" style="font-size:12px;line-height:1.7;">?</div></div>
   </div>
   <div class="rapor-panel" id="raporPanel"></div>`;
@@ -536,17 +536,17 @@ function renderGorselIcerik(s,yanit){
     gBas.textContent='Kelime Bulutu';
     const words=aktifKelimeler();
     const entries=Object.entries(words).sort((a,b)=>b[1]-a[1]).slice(0,60);
-    if(!entries.length){gIc.innerHTML='<div style="color:var(--muted);text-align:center;padding:30px;font-size:13px;">Yan&#305;tlar bekleniyor...</div>';return;}
+    if(!entries.length){gIc.innerHTML='<div style="color:var(--muted);text-align:center;padding:30px;font-size:13px;">Yanıtlar bekleniyor...</div>';return;}
     const max=entries[0][1];
     gIc.innerHTML='<div class="bulut-alan">'+entries.map(([w,c],i)=>{const size=11+Math.round((c/max)*30);const col=COLORS[i%COLORS.length];return`<span class="bulut-k" style="font-size:${size}px;background:${col.bg};color:${col.c};font-family:'Syne',sans-serif;font-weight:${c>2?'700':'400'}">${w}</span>`}).join('')+'</div>';
   } else if(tip==='yoklama'||tip==='secmeli'){
-    gBas.textContent='Canl&#305; Sonu&#231;lar';
+    gBas.textContent='Canlı Sonuçlar';
     const sayimlar={};yanit.forEach(r=>{sayimlar[r.text]=(sayimlar[r.text]||0)+1;});
     const labellar=tip==='yoklama'?(s.secenekler||[]).map(o=>o.emoji+' '+o.metin):(s.secenekler||[]);
     gIc.innerHTML='<div class="yoklama-bars">'+labellar.map((l,i)=>{const sayi=sayimlar[String(i)]||0;const pct=yanit.length?Math.round(sayi/yanit.length*100):0;return`<div class="yb-row"><div class="yb-label">${escHtml(l)}</div><div class="yb-wrap"><div class="yb-fill" style="width:${pct}%;background:${BAR_COLORS[i%BAR_COLORS.length]}">${pct>12?pct+'%':''}</div></div><div class="yb-n">${sayi}</div></div>`;}).join('')+'</div>';
   } else if(tip==='siralama'){
-    gBas.textContent='S&#305;ralama Sonu&#231;lar&#305;';
-    if(!yanit.length){gIc.innerHTML='<div style="color:var(--muted);text-align:center;padding:30px;font-size:13px;">Yan&#305;tlar bekleniyor...</div>';return;}
+    gBas.textContent='Sıralama Sonuçları';
+    if(!yanit.length){gIc.innerHTML='<div style="color:var(--muted);text-align:center;padding:30px;font-size:13px;">Yanıtlar bekleniyor...</div>';return;}
     const ogeler=s.siralama_ogeleri||[];const puanlar={};ogeler.forEach(o=>{puanlar[o]=0;});
     yanit.forEach(r=>{r.text.split('||').forEach((item,idx)=>{if(puanlar[item]!==undefined)puanlar[item]+=(ogeler.length-idx);});});
     const sirali=Object.entries(puanlar).sort((a,b)=>b[1]-a[1]);const maxP=sirali[0]?.[1]||1;
@@ -560,21 +560,21 @@ function renderList(){
 }
 function updateStats(){}
 
-// ANAL&#304;Z
+// ANALİZ
 async function analizYap(){
   const yanit=aktifYanitlar();
-  if(yanit.length<3){alert('En az 3 yan&#305;t gerekli.');return;}
+  if(yanit.length<3){alert('En az 3 yanıt gerekli.');return;}
   const btn=document.getElementById('btnAnaliz');
   btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:5px;vertical-align:middle"></span>Analiz...';
   const tanimlar=yanit.map((r,i)=>`${i+1}. ${r.name}: "${r.text}"`).join('\n');
   const soru=sorular[aktifSoruIdx]?.soru||'';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:`Bu bir kamu ekonomisi/maliye giri&#351; dersi. Ders konusu: siyasi s&#252;re&#231;te karar alma, akt&#246;rler (se&#231;men, politikac&#305;, b&#252;rokrat) ve kamu b&#252;t&#231;esi. &#214;&#287;renciler 1. s&#305;n&#305;f &#252;niversite &#246;&#287;rencisi.\n\nSoru: "${soru}"\n&#214;&#287;renci yan&#305;tlar&#305;:\n${tanimlar}\n\nSadece JSON d&#246;nd&#252;r:\n{"ton":{"yuk":35,"notr":40,"fayda":25},"algi_pusulasi":{"zorunluluk":80,"hizmet":45,"devlet_gucu":70,"toplumsal_fayda":35,"ekonomik_yuk":60},"cerceveler":{"ekonomik":{"sayi":12,"ornek":"&#246;rnek"},"hukuki":{"sayi":8,"ornek":"&#246;rnek"},"gunluk":{"sayi":15,"ornek":"&#246;rnek"}},"yanlis_kavramlar":[{"kavram":"Yanl&#305;&#351; kavram","duzeltme":"Do&#287;ru a&#231;&#305;klama"}],"pedagoji":"Bu yan&#305;tlara bakarak &#246;&#287;retim &#252;yesine 2-3 c&#252;mle somut &#246;neri: hangi kavram eksik, ne &#252;zerinde durulmal&#305;?"}`}]})});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:`Bu bir kamu ekonomisi/maliye giriş dersi. Ders konusu: siyasi süreçte karar alma, aktörler (seçmen, politikacı, bürokrat) ve kamu bütçesi. Öğrenciler 1. sınıf üniversite öğrencisi.\n\nSoru: "${soru}"\nÖğrenci yanıtları:\n${tanimlar}\n\nSadece JSON döndür:\n{"ton":{"yuk":35,"notr":40,"fayda":25},"algi_pusulasi":{"zorunluluk":80,"hizmet":45,"devlet_gucu":70,"toplumsal_fayda":35,"ekonomik_yuk":60},"cerceveler":{"ekonomik":{"sayi":12,"ornek":"örnek"},"hukuki":{"sayi":8,"ornek":"örnek"},"gunluk":{"sayi":15,"ornek":"örnek"}},"yanlis_kavramlar":[{"kavram":"Yanlış kavram","duzeltme":"Doğru açıklama"}],"pedagoji":"Bu yanıtlara bakarak öğretim üyesine 2-3 cümle somut öneri: hangi kavram eksik, ne üzerinde durulmalı?"}`}]})});
     const data=await res.json();
     const text=data.content.map(i=>i.text||'').join('');
     const result=JSON.parse(text.replace(/```json|```/g,'').trim());
     renderAnaliz(result);
-  }catch(e){alert('Analiz hatas&#305;: '+e.message);}
+  }catch(e){alert('Analiz hatası: '+e.message);}
   btn.disabled=false;btn.textContent='? Analiz';
 }
 
@@ -591,10 +591,10 @@ function renderAnaliz(r){
   document.getElementById('tFP').textContent=fayda+'%';
   const ap=r.algi_pusulasi;
   if(radarObj)radarObj.destroy();
-  radarObj=new Chart(document.getElementById('radarChart'),{type:'radar',data:{labels:['Zorunluluk','Hizmet','Devlet G&#252;c&#252;','Toplumsal Fayda','Ekonomik Y&#252;k'],datasets:[{data:[ap.zorunluluk,ap.hizmet,ap.devlet_gucu,ap.toplumsal_fayda,ap.ekonomik_yuk],backgroundColor:'rgba(45,106,79,0.15)',borderColor:'#2d6a4f',borderWidth:2,pointBackgroundColor:'#2d6a4f',pointRadius:3}]},options:{responsive:true,scales:{r:{min:0,max:100,ticks:{stepSize:25,font:{size:9}},pointLabels:{font:{size:9,family:'DM Sans'}}}},plugins:{legend:{display:false}}}});
-  document.getElementById('cEko').textContent=r.cerceveler.ekonomik.sayi+' &#246;&#287;r.';
-  document.getElementById('cHuk').textContent=r.cerceveler.hukuki.sayi+' &#246;&#287;r.';
-  document.getElementById('cGun').textContent=r.cerceveler.gunluk.sayi+' &#246;&#287;r.';
+  radarObj=new Chart(document.getElementById('radarChart'),{type:'radar',data:{labels:['Zorunluluk','Hizmet','Devlet Gücü','Toplumsal Fayda','Ekonomik Yük'],datasets:[{data:[ap.zorunluluk,ap.hizmet,ap.devlet_gucu,ap.toplumsal_fayda,ap.ekonomik_yuk],backgroundColor:'rgba(45,106,79,0.15)',borderColor:'#2d6a4f',borderWidth:2,pointBackgroundColor:'#2d6a4f',pointRadius:3}]},options:{responsive:true,scales:{r:{min:0,max:100,ticks:{stepSize:25,font:{size:9}},pointLabels:{font:{size:9,family:'DM Sans'}}}},plugins:{legend:{display:false}}}});
+  document.getElementById('cEko').textContent=r.cerceveler.ekonomik.sayi+' öğr.';
+  document.getElementById('cHuk').textContent=r.cerceveler.hukuki.sayi+' öğr.';
+  document.getElementById('cGun').textContent=r.cerceveler.gunluk.sayi+' öğr.';
   document.getElementById('cEkoO').textContent='"'+r.cerceveler.ekonomik.ornek+'"';
   document.getElementById('cHukO').textContent='"'+r.cerceveler.hukuki.ornek+'"';
   document.getElementById('cGunO').textContent='"'+r.cerceveler.gunluk.ornek+'"';
@@ -610,15 +610,15 @@ async function genelRapor(){
   btn.disabled=true;btn.textContent='?';
   const ozet=sorular.map((s,i)=>{
     const y=tumYanitlar.filter(r=>r.soruIdx===i);
-    return `Soru ${i+1} (${TIP_LABEL[s.tip]}): "${s.soru}" ? ${y.length} yan&#305;t`;
+    return `Soru ${i+1} (${TIP_LABEL[s.tip]}): "${s.soru}" ? ${y.length} yanıt`;
   }).join('\n');
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:`A&#351;a&#287;&#305;daki ders oturumunu analiz et. Her soru i&#231;in k&#305;sa bir de&#287;erlendirme yap ve genel bir pedagojik rapor olu&#351;tur. Sadece JSON d&#246;nd&#252;r:\n\n${ozet}\n\nT&#252;m yan&#305;tlar:\n${tumYanitlar.map(r=>`[S${r.soruIdx+1}] ${r.name}: "${r.text}"`).join('\n')}\n\n{"sorular":[{"no":1,"ozet":"k&#305;sa de&#287;erlendirme","anlasildi":true}],"genel":"genel pedagojik rapor 3-4 c&#252;mle","oneri":"bir sonraki ders i&#231;in &#246;neri"}`}]})});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:`Aşağıdaki ders oturumunu analiz et. Her soru için kısa bir değerlendirme yap ve genel bir pedagojik rapor oluştur. Sadece JSON döndür:\n\n${ozet}\n\nTüm yanıtlar:\n${tumYanitlar.map(r=>`[S${r.soruIdx+1}] ${r.name}: "${r.text}"`).join('\n')}\n\n{"sorular":[{"no":1,"ozet":"kısa değerlendirme","anlasildi":true}],"genel":"genel pedagojik rapor 3-4 cümle","oneri":"bir sonraki ders için öneri"}`}]})});
     const data=await res.json();
     const text=data.content.map(i=>i.text||'').join('');
     const result=JSON.parse(text.replace(/```json|```/g,'').trim());
     renderRapor(result);
-  }catch(e){alert('Rapor hatas&#305;: '+e.message);}
+  }catch(e){alert('Rapor hatası: '+e.message);}
   btn.disabled=false;btn.textContent='? Rapor';
 }
 
@@ -628,15 +628,15 @@ function renderRapor(r){
   panel.classList.add('visible');
   panel.innerHTML=`<div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:12px;">? Genel Oturum Raporu</div>
     ${r.sorular?.map(s=>`<div class="rapor-soru-item"><div class="rsi-soru">Soru ${s.no}: ${s.anlasildi?'?':'??'}</div><div class="rsi-ozet">${escHtml(s.ozet)}</div></div>`).join('')||''}
-    <div class="ped-kutu" style="margin-top:12px;"><div style="font-size:10px;font-weight:700;color:#2d6a4f;margin-bottom:5px;">Genel De&#287;erlendirme</div><div style="font-size:12px;line-height:1.7;">${escHtml(r.genel)}</div></div>
-    <div style="background:#fff3e0;border:1px solid #ffe082;border-radius:8px;padding:12px;margin-top:8px;font-size:12px;line-height:1.6;"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">&#214;neri</strong>${escHtml(r.oneri)}</div>`;
+    <div class="ped-kutu" style="margin-top:12px;"><div style="font-size:10px;font-weight:700;color:#2d6a4f;margin-bottom:5px;">Genel Değerlendirme</div><div style="font-size:12px;line-height:1.7;">${escHtml(r.genel)}</div></div>
+    <div style="background:#fff3e0;border:1px solid #ffe082;border-radius:8px;padding:12px;margin-top:8px;font-size:12px;line-height:1.6;"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Öneri</strong>${escHtml(r.oneri)}</div>`;
   panel.scrollIntoView({behavior:'smooth'});
 }
 
 // CSV
 function csvIndir(){
   if(!tumYanitlar.length)return;
-  const satirlar=[['\uFEFFNo','Ad Soyad','Soru No','Soru Metni','Yan&#305;t','T&#252;r','Tarih'],...tumYanitlar.map((r,i)=>[i+1,r.name||'',r.soruIdx!==undefined?r.soruIdx+1:'',sorular[r.soruIdx]?.soru||'',(r.text||'').replace(/"/g,'""'),TIP_LABEL[r.tip]||r.tip||'',r.ts?new Date(r.ts).toLocaleString('tr-TR'):'' ])];
+  const satirlar=[['\uFEFFNo','Ad Soyad','Soru No','Soru Metni','Yanıt','Tür','Tarih'],...tumYanitlar.map((r,i)=>[i+1,r.name||'',r.soruIdx!==undefined?r.soruIdx+1:'',sorular[r.soruIdx]?.soru||'',(r.text||'').replace(/"/g,'""'),TIP_LABEL[r.tip]||r.tip||'',r.ts?new Date(r.ts).toLocaleString('tr-TR'):'' ])];
   const csv=satirlar.map(s=>s.map(h=>`"${h}"`).join(',')).join('\r\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
