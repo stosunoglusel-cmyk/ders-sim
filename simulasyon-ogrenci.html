@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Sim&#252;lasyon</title>
+<title>Simülasyon</title>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <style>
@@ -64,7 +64,7 @@ input.isim-inp:focus{outline:none;border-color:var(--accent2);}
 </head>
 <body>
 <header>
-  <h1>Kamu Ekonomisi Sim&#252;lasyonu</h1>
+  <h1>Kamu Ekonomisi Simülasyonu</h1>
   <span class="sahne-badge" id="sahneBadge">Bekleniyor</span>
 </header>
 <div class="ilerleme"><div class="ilerleme-dolu" id="ilerleme" style="width:0%"></div></div>
@@ -72,14 +72,14 @@ input.isim-inp:focus{outline:none;border-color:var(--accent2);}
 <div class="content" id="icerik">
   <div class="merkez">
     <div class="buyuk-ikon">?</div>
-    <div class="bas">Sim&#252;lasyon bekleniyor</div>
-    <div class="alt">&#214;&#287;retmen sim&#252;lasyonu ba&#351;lat&#305;nca ekran de&#287;i&#351;ecek.</div>
+    <div class="bas">Simülasyon bekleniyor</div>
+    <div class="alt">Öğretmen simülasyonu başlatınca ekran değişecek.</div>
   </div>
 </div>
 
 <script>
 const FB={apiKey:'AIzaSyDFwRi7C49WQUjZlJEDEZNtg0Q82B1zeyM',projectId:'vergi-dc18f',databaseURL:'https://vergi-dc18f-default-rtdb.firebaseio.com'};
-const SAHNE_ISIMLERI={1:'Sahne 1: Se&#231;men',2:'Sahne 2: Politikac&#305;',3:'Sahne 3: B&#252;rokrat'};
+const SAHNE_ISIMLERI={1:'Sahne 1: Seçmen',2:'Sahne 2: Politikacı',3:'Sahne 3: Bürokrat'};
 const ROL_RENK={secmen:'#c84b31',politikaci:'#2d6a4f',burokrat:'#457b9d'};
 
 let db,simRef,oyRef;
@@ -116,21 +116,21 @@ function guncelle(d){
 
 function gosterBekle(){
   document.getElementById('sahneBadge').textContent='Bekleniyor';
-  document.getElementById('icerik').innerHTML=`<div class="merkez"><div class="buyuk-ikon">?</div><div class="bas">Sim&#252;lasyon bekleniyor</div><div class="alt">&#214;&#287;retmen sim&#252;lasyonu ba&#351;lat&#305;nca ekran de&#287;i&#351;ecek.</div></div>`;
+  document.getElementById('icerik').innerHTML=`<div class="merkez"><div class="buyuk-ikon">?</div><div class="bas">Simülasyon bekleniyor</div><div class="alt">Öğretmen simülasyonu başlatınca ekran değişecek.</div></div>`;
 }
 
 function gosterIsimAl(d){
   document.getElementById('icerik').innerHTML=`
     <div class="sahne-bilgi">
-      <div class="sahne-no">Sim&#252;lasyon Ba&#351;l&#305;yor</div>
-      <div class="sahne-baslik">Kamu Ekonomisinde Siyasi S&#252;re&#231;</div>
-      <div class="sahne-alt">3 sahne oynayaca&#287;&#305;z. Her sahnede farkl&#305; bir akt&#246;r&#252;n g&#246;z&#252;nden bakacaks&#305;n.</div>
+      <div class="sahne-no">Simülasyon Başlıyor</div>
+      <div class="sahne-baslik">Kamu Ekonomisinde Siyasi Süreç</div>
+      <div class="sahne-alt">3 sahne oynayacağız. Her sahnede farklı bir aktörün gözünden bakacaksın.</div>
     </div>
     <div class="isim-alani">
-      <label class="isim-label">Ad&#305;n Soyad&#305;n</label>
-      <input class="isim-inp" id="isimInp" placeholder="Ali Y&#305;lmaz" maxlength="50"/>
+      <label class="isim-label">Adın Soyadın</label>
+      <input class="isim-inp" id="isimInp" placeholder="Ali Yılmaz" maxlength="50"/>
     </div>
-    <button class="btn-gonder" onclick="isimKaydet()">Kat&#305;l</button>`;
+    <button class="btn-gonder" onclick="isimKaydet()">Katıl</button>`;
 }
 
 function isimKaydet(){
@@ -148,18 +148,18 @@ function gosterRolDagitim(d){
     benimRolum=benimRol;
     document.getElementById('icerik').innerHTML=`
       <div class="rol-kart" style="background:${ROL_RENK[benimRol.tip]||'#1a1a2e'}">
-        <div class="rol-tip">Senin Rol&#252;n</div>
+        <div class="rol-tip">Senin Rolün</div>
         <div class="rol-isim">${esc(benimRol.isim)}</div>
         <div class="rol-aciklama">${esc(benimRol.aciklama)}</div>
       </div>
       <div class="gorev-kutu">
-        <div class="gorev-baslik">G&#246;revin</div>
+        <div class="gorev-baslik">Görevin</div>
         <div class="gorev-text">${esc(benimRol.gorev)}</div>
       </div>
       <div class="onay-ekran">
         <div class="onay-ikon">?</div>
-        <div class="onay-bas">Rol&#252;n belirlendi!</div>
-        <div class="onay-alt">&#214;&#287;retmen sahneyi ba&#351;lat&#305;nca g&#246;revin ekranda g&#246;r&#252;necek.</div>
+        <div class="onay-bas">Rolün belirlendi!</div>
+        <div class="onay-alt">Öğretmen sahneyi başlatınca görevin ekranda görünecek.</div>
       </div>`;
     return;
   }
@@ -172,8 +172,8 @@ function gosterRolDagitim(d){
       </div>
       <div class="onay-ekran">
         <div class="onay-ikon">?</div>
-        <div class="onay-bas">Talebiniz al&#305;nd&#305;</div>
-        <div class="onay-alt">Kura &#231;ekilince rol atan&#305;rsa bildirilecek. Atanmazsan se&#231;men olarak oy kullanacaks&#305;n.</div>
+        <div class="onay-bas">Talebiniz alındı</div>
+        <div class="onay-alt">Kura çekilince rol atanırsa bildirilecek. Atanmazsan seçmen olarak oy kullanacaksın.</div>
       </div>`;
     return;
   }
@@ -185,9 +185,9 @@ function gosterRolDagitim(d){
     </div>
     <div class="rol-isteme">
       <div class="rol-isteme-baslik">Bu sahnede rol almak ister misin?</div>
-      <div class="rol-isteme-alt">G&#246;n&#252;ll&#252;ler aras&#305;ndan kura &#231;ekilecek. Se&#231;ilmezsen se&#231;men olarak oy kullan&#305;rs&#305;n.</div>
+      <div class="rol-isteme-alt">Gönüllüler arasından kura çekilecek. Seçilmezsen seçmen olarak oy kullanırsın.</div>
       <button class="btn-evet" onclick="rolIste()">Evet, rol almak istiyorum</button>
-      <button class="btn-hayir" onclick="rolReddet()">Hay&#305;r, se&#231;men olarak kat&#305;laca&#287;&#305;m</button>
+      <button class="btn-hayir" onclick="rolReddet()">Hayır, seçmen olarak katılacağım</button>
     </div>`;
 }
 
@@ -206,15 +206,15 @@ function gosterHazirlik(d){
   if(benimRolum){
     document.getElementById('icerik').innerHTML=`
       <div class="rol-kart" style="background:${ROL_RENK[benimRolum.tip]||'#1a1a2e'}">
-        <div class="rol-tip">Senin Rol&#252;n ? Haz&#305;rlan</div>
+        <div class="rol-tip">Senin Rolün ? Hazırlan</div>
         <div class="rol-isim">${esc(benimRolum.isim)}</div>
         <div class="rol-aciklama">${esc(benimRolum.aciklama)}</div>
       </div>
       <div class="gorev-kutu">
-        <div class="gorev-baslik">G&#246;revin</div>
+        <div class="gorev-baslik">Görevin</div>
         <div class="gorev-text">${esc(benimRolum.gorev)}</div>
       </div>
-      <div class="izleyici-bilgi">&#214;&#287;retmen sahneyi ba&#351;latacak. Haz&#305;r ol.</div>`;
+      <div class="izleyici-bilgi">Öğretmen sahneyi başlatacak. Hazır ol.</div>`;
   } else {
     const sahneInfo=getSahneInfo(d.sahne);
     document.getElementById('icerik').innerHTML=`
@@ -223,7 +223,7 @@ function gosterHazirlik(d){
         <div class="sahne-baslik">${sahneInfo.baslik}</div>
         <div class="sahne-alt">${sahneInfo.aciklama}</div>
       </div>
-      <div class="izleyici-bilgi">Sen bu sahnede <strong>se&#231;men</strong> rol&#252;ndesin.<br>Sahne ba&#351;lay&#305;nca oy kullanabileceksin.</div>`;
+      <div class="izleyici-bilgi">Sen bu sahnede <strong>seçmen</strong> rolündesin.<br>Sahne başlayınca oy kullanabileceksin.</div>`;
   }
 }
 
@@ -237,33 +237,33 @@ function gosterSahne(d){
         <div class="rol-isim">${esc(benimRolum.isim)}</div>
       </div>
       <div class="gorev-kutu">
-        <div class="gorev-baslik">&#350;u an ne yapmal&#305;s&#305;n?</div>
+        <div class="gorev-baslik">Şu an ne yapmalısın?</div>
         <div class="gorev-text">${esc(benimRolum.sahne_gorevi||benimRolum.gorev)}</div>
       </div>
-      <div class="izleyici-bilgi">&#214;&#287;retmen sana s&#246;z verecek. Haz&#305;r ol.</div>`;
+      <div class="izleyici-bilgi">Öğretmen sana söz verecek. Hazır ol.</div>`;
   } else {
     document.getElementById('icerik').innerHTML=`
       <div class="sahne-bilgi">
-        <div class="sahne-no">${SAHNE_ISIMLERI[d.sahne]} ? Canl&#305;</div>
+        <div class="sahne-no">${SAHNE_ISIMLERI[d.sahne]} ? Canlı</div>
         <div class="sahne-baslik">${sahneInfo.baslik}</div>
-        <div class="sahne-alt">${sahneInfo.izleyici_bilgi||'Sahneyi izle. Oylama k&#305;sm&#305;nda g&#246;r&#252;&#351;&#252;n&#252; bildirirsin.'}</div>
+        <div class="sahne-alt">${sahneInfo.izleyici_bilgi||'Sahneyi izle. Oylama kısmında görüşünü bildirirsin.'}</div>
       </div>
-      <div class="izleyici-bilgi">Sahne devam ediyor...<br>Oylama ba&#351;lay&#305;nca burada g&#246;r&#252;necek.</div>`;
+      <div class="izleyici-bilgi">Sahne devam ediyor...<br>Oylama başlayınca burada görünecek.</div>`;
   }
 }
 
 function gosterOylama(d){
   if(gonderildi){
-    document.getElementById('icerik').innerHTML=`<div class="onay-ekran"><div class="onay-ikon">?</div><div class="onay-bas">Oyunuz al&#305;nd&#305;</div><div class="onay-alt">Sonu&#231;lar ekranda g&#246;steriliyor.</div></div>`;
+    document.getElementById('icerik').innerHTML=`<div class="onay-ekran"><div class="onay-ikon">?</div><div class="onay-bas">Oyunuz alındı</div><div class="onay-alt">Sonuçlar ekranda gösteriliyor.</div></div>`;
     return;
   }
-  const soru=d.oylama_soru||'Bu karar&#305; do&#287;ru buldunuz mu?';
-  const secenekler=d.oylama_secenekler||['Evet, do&#287;ru karar','Hay&#305;r, yanl&#305;&#351; karar','Karars&#305;z&#305;m'];
+  const soru=d.oylama_soru||'Bu kararı doğru buldunuz mu?';
+  const secenekler=d.oylama_secenekler||['Evet, doğru karar','Hayır, yanlış karar','Kararsızım'];
   const harfler=['A','B','C','D'];
   let seciliIdx=null;
   document.getElementById('icerik').innerHTML=`
     <div class="sahne-bilgi">
-      <div class="sahne-no">Oylama Zaman&#305;</div>
+      <div class="sahne-no">Oylama Zamanı</div>
       <div class="sahne-baslik">${esc(soru)}</div>
     </div>
     <div class="oy-secenekler" id="oySecenekler">
@@ -273,7 +273,7 @@ function gosterOylama(d){
           <span>${esc(s)}</span>
         </button>`).join('')}
     </div>
-    <button class="btn-gonder" id="oyGonderBtn" onclick="oyGonder()" disabled>Oyumu G&#246;nder</button>`;
+    <button class="btn-gonder" id="oyGonderBtn" onclick="oyGonder()" disabled>Oyumu Gönder</button>`;
 
   window.oyaSec=function(i,el){
     seciliIdx=i;
@@ -284,22 +284,22 @@ function gosterOylama(d){
   window.oyGonder=function(){
     if(seciliIdx===null) return;
     const btn=document.getElementById('oyGonderBtn');
-    btn.disabled=true;btn.textContent='G&#246;nderiliyor...';
+    btn.disabled=true;btn.textContent='Gönderiliyor...';
     oyRef.push({isim,oy:seciliIdx,sahne:d.sahne,oturumId:d.oturumId||'x',ts:Date.now()});
     gonderildi=true;
-    document.getElementById('icerik').innerHTML=`<div class="onay-ekran"><div class="onay-ikon">?</div><div class="onay-bas">Oyunuz al&#305;nd&#305;</div><div class="onay-alt">Sonu&#231;lar ekranda g&#246;steriliyor.</div></div>`;
+    document.getElementById('icerik').innerHTML=`<div class="onay-ekran"><div class="onay-ikon">?</div><div class="onay-bas">Oyunuz alındı</div><div class="onay-alt">Sonuçlar ekranda gösteriliyor.</div></div>`;
   };
 }
 
 function gosterKavram(d){
-  const kavram=d.kavram||{isim:'Kavram',aciklama:'Bu sahneden &#231;&#305;kan temel fikir.'};
+  const kavram=d.kavram||{isim:'Kavram',aciklama:'Bu sahneden çıkan temel fikir.'};
   document.getElementById('icerik').innerHTML=`
     <div class="kavram-kutu">
       <div class="kavram-etiket">Bu Sahneden Kavram</div>
       <div class="kavram-isim">${esc(kavram.isim)}</div>
       <div class="kavram-aciklama">${esc(kavram.aciklama)}</div>
     </div>
-    <div class="izleyici-bilgi">&#214;&#287;retmen bir sonraki sahneye ge&#231;ince ekran de&#287;i&#351;ecek.</div>`;
+    <div class="izleyici-bilgi">Öğretmen bir sonraki sahneye geçince ekran değişecek.</div>`;
 }
 
 function gosterBitis(){
@@ -308,21 +308,21 @@ function gosterBitis(){
   document.getElementById('icerik').innerHTML=`
     <div class="merkez">
       <div class="buyuk-ikon">?</div>
-      <div class="bas">Sim&#252;lasyon tamamland&#305;</div>
-      <div class="alt">&#220;&#231; akt&#246;r&#252; de deneyimledin.<br>Se&#231;men, politikac&#305;, b&#252;rokrat ? hepsi kendi sisteminde rasyonel davrand&#305;.<br><br>Peki sistem neden yine de aksakl&#305;k &#252;retiyor?</div>
+      <div class="bas">Simülasyon tamamlandı</div>
+      <div class="alt">Üç aktörü de deneyimledin.<br>Seçmen, politikacı, bürokrat ? hepsi kendi sisteminde rasyonel davrandı.<br><br>Peki sistem neden yine de aksaklık üretiyor?</div>
     </div>`;
 }
 
 function getSahneInfo(sahne){
   const bilgi={
-    1:{baslik:'Se&#231;men Sahnesi',aciklama:'&#304;ki aday var. 30 saniyede oy kullanacaks&#305;n.',izleyici_bilgi:'Adaylar&#305; dinle. Karar&#305;n&#305; ver.'},
-    2:{baslik:'Politikac&#305; Sahnesi',aciklama:'Se&#231;ilmi&#351; temsilciler b&#252;t&#231;e karar&#305; al&#305;yor.',izleyici_bilgi:'Kararlar&#305; izle. Oylama k&#305;sm&#305;nda de&#287;erlendir.'},
-    3:{baslik:'B&#252;rokrat Sahnesi',aciklama:'Bakanl&#305;klar b&#252;t&#231;e k&#305;s&#305;nt&#305;s&#305;nda masaya oturuyor.',izleyici_bilgi:'Kim kendi b&#252;t&#231;esinden kesiyor? &#304;zle ve de&#287;erlendir.'}
+    1:{baslik:'Seçmen Sahnesi',aciklama:'İki aday var. 30 saniyede oy kullanacaksın.',izleyici_bilgi:'Adayları dinle. Kararını ver.'},
+    2:{baslik:'Politikacı Sahnesi',aciklama:'Seçilmiş temsilciler bütçe kararı alıyor.',izleyici_bilgi:'Kararları izle. Oylama kısmında değerlendir.'},
+    3:{baslik:'Bürokrat Sahnesi',aciklama:'Bakanlıklar bütçe kısıntısında masaya oturuyor.',izleyici_bilgi:'Kim kendi bütçesinden kesiyor? İzle ve değerlendir.'}
   };
   return bilgi[sahne]||{baslik:'Sahne',aciklama:'',izleyici_bilgi:''};
 }
 
-function d2key(s){return s.replace(/[^a-zA-Z0-9&#287;&#252;&#351;&#305;&#246;&#231;&#286;&#220;&#350;&#304;&#214;&#199;]/g,'_').substring(0,30)+'_'+Date.now()%10000;}
+function d2key(s){return s.replace(/[^a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]/g,'_').substring(0,30)+'_'+Date.now()%10000;}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 </script>
 </body>
