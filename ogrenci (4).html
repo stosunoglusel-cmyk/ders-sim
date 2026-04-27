@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Derse Katıl</title>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1a1a2e;--paper:#f5f0e8;--accent:#c84b31;--accent2:#2d6a4f;--muted:#8a8070;--surface:#ede8de;--border:#d4cfc4;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
+header{background:var(--ink);color:var(--paper);padding:14px 20px;text-align:center;}
+header h1{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;}
+.content{padding:24px 20px;max-width:480px;margin:0 auto;}
+.kart{background:var(--ink);color:var(--paper);border-radius:14px;padding:18px;margin-bottom:16px;}
+.kart-tip{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;opacity:0.6;margin-bottom:6px;}
+.kart-no{font-size:11px;opacity:0.5;float:right;}
+.kart-soru{font-family:'Syne',sans-serif;font-size:17px;font-weight:600;line-height:1.4;clear:both;}
+.label{font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;display:block;margin-top:14px;}
+input.f,textarea.f{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:'DM Sans',sans-serif;background:white;color:var(--ink);}
+input.f:focus,textarea.f:focus{outline:none;border-color:var(--accent2);}
+textarea.f{resize:none;line-height:1.6;}
+.secenekler{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+.sec-btn{width:100%;padding:13px 14px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--ink);text-align:left;display:flex;align-items:center;gap:10px;transition:all 0.15s;}
+.sec-btn:hover{border-color:var(--accent2);}
+.sec-btn.secili{border-color:var(--accent2);background:var(--accent2);color:white;}
+.harf{width:26px;height:26px;border-radius:6px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;}
+.sec-btn.secili .harf{background:rgba(255,255,255,0.25);color:white;}
+.siralama{display:flex;flex-direction:column;gap:7px;margin-top:14px;}
+.sir-item{background:white;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:10px;cursor:grab;user-select:none;}
+.sir-item.dragging{opacity:0.4;}
+.sir-item.dragover{border-color:var(--accent);}
+.sir-no{width:24px;height:24px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;}
+.sir-text{font-size:13px;flex:1;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;min-height:32px;}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:13px;}
+.chip-row{display:flex;gap:7px;margin-top:8px;}
+.chip-inp{flex:1;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;background:white;color:var(--ink);}
+.chip-inp:focus{outline:none;border-color:var(--accent2);}
+.chip-ekle{padding:11px 14px;border-radius:10px;background:var(--accent2);color:white;border:none;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
+.btn{width:100%;padding:15px;background:var(--accent);color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;}
+.btn:disabled{background:var(--muted);cursor:default;}
+.merkez{text-align:center;padding:60px 20px;}
+.ikon{font-size:40px;margin-bottom:14px;}
+.bas{font-family:'Syne',sans-serif;font-size:18px;font-weight:600;margin-bottom:6px;}
+.alt{font-size:13px;color:var(--muted);line-height:1.6;}
+.ilerleme{height:3px;background:rgba(255,255,255,0.15);position:relative;}
+.ilerleme-dolu{height:100%;background:#4ade80;transition:width 0.4s;}
+</style>
+</head>
+<body>
+<header><h1 id="baslik">Derse Katıl</h1></header>
+<div class="ilerleme"><div class="ilerleme-dolu" id="ilerleme" style="width:0%"></div></div>
+
+<div class="content" id="icerik">
+  <div class="merkez">
+    <div class="ikon">⏳</div>
+    <div class="bas">Bekleniyor...</div>
+    <div class="alt">Öğretmen başlatınca soru görünecek</div>
+  </div>
+</div>
+
+<script>
+const FB_CONFIG={apiKey:'AIzaSyDFwRi7C49WQUjZlJEDEZNtg0Q82B1zeyM',projectId:'vergi-dc18f',databaseURL:'https://vergi-dc18f-default-rtdb.firebaseio.com'};
+const TIPLER={tanim:'Tanım Yaz',yoklama:'Anlama Kontrolü',secmeli:'Çoktan Seçmeli',siralama:'Sıralama',cagrisim:'Kelime Çağrışımı',yansima:'Ders Sonu Yansıma'};
+
+let db,sessionRef,responsesRef;
+let isim='';
+let oturumId='';
+let soruIdx=0;
+let gonderildi={};
+let secili=null;
+let cagrisimler=[];
+let siraliOgeler=[];
+let dragSrc=null;
+let mevcutSoru=null;
+
+window.onload=()=>{
+  try{const app=firebase.initializeApp(FB_CONFIG,'s');db=firebase.database(app);}
+  catch(e){if(e.code==='app/duplicate-app')db=firebase.database(firebase.app('s'));}
+  sessionRef=db.ref('session');
+  responsesRef=db.ref('responses');
+  sessionRef.on('value',guncelle);
+};
+
+function guncelle(snap){
+  const s=snap.val();
+  if(!s||!s.active){
+    goster('<div class="merkez"><div class="ikon">'+(s?'🏁':'⏳')+'</div><div class="bas">'+(s?'Oturum sona erdi':'Bekleniyor...')+'</div><div class="alt">'+(s?'Teşekkürler!':'Öğretmen başlatınca soru görünecek')+'</div></div>');
+    return;
+  }
+  document.getElementById('baslik').textContent=s.baslik||'Derse Katıl';
+  // Yeni oturum
+  if(s.oturumId&&s.oturumId!==oturumId){oturumId=s.oturumId;gonderildi={};}
+  const idx=s.soruIdx||0;
+  const toplam=s.sorular?s.sorular.length:1;
+  document.getElementById('ilerleme').style.width=((idx+1)/toplam*100)+'%';
+  soruIdx=idx;
+  // Bu soruya cevap verdik mi?
+  if(gonderildi[idx]){
+    if(Object.keys(gonderildi).length>=toplam){
+      goster('<div class="merkez"><div class="ikon">🎓</div><div class="bas">Tamamlandı!</div><div class="alt">Tüm sorulara yanıt verdiniz.</div></div>');
+    } else {
+      goster('<div class="merkez"><div class="ikon">✅</div><div class="bas">Yanıtınız alındı!</div><div class="alt">Sonraki soru bekleniyor...</div></div>');
+    }
+    return;
+  }
+  // İsim yoksa önce onu al
+  if(!isim){
+    soruGoster(s,idx,toplam,true);
+  } else {
+    soruGoster(s,idx,toplam,false);
+  }
+}
+
+function soruGoster(s,idx,toplam,isimSor){
+  let soru;
+  if(s.sorular&&s.sorular[idx])soru=s.sorular[idx];
+  else soru={soru:s.question,tip:s.tip||'tanim',secenekler:s.secenekler,siralama_ogeleri:s.siralama_ogeleri};
+  mevcutSoru=soru;
+  secili=null;cagrisimler=[];siraliOgeler=[...(soru.siralama_ogeleri||[])];
+  const tip=soru.tip||'tanim';
+  const harfler=['A','B','C','D','E','F'];
+  let cevapHtml='';
+  if(tip==='tanim'||tip==='yansima'){
+    cevapHtml='<label class="label">Yanıtınız</label><textarea class="f" id="cevap" rows="4" maxlength="400" placeholder="Buraya yazın..."></textarea>';
+  } else if(tip==='yoklama'){
+    const opts=soru.secenekler||[{emoji:'😊',metin:'Anladım'},{emoji:'🤔',metin:'Kısmen'},{emoji:'😕',metin:'Anlamadım'}];
+    cevapHtml='<div class="secenekler">'+opts.map((o,i)=>`<button class="sec-btn" onclick="sec(${i},this)"><span style="font-size:20px">${o.emoji||'•'}</span><span>${o.metin||o}</span></button>`).join('')+'</div>';
+  } else if(tip==='secmeli'){
+    const opts=soru.secenekler||[];
+    cevapHtml='<div class="secenekler">'+opts.map((o,i)=>`<button class="sec-btn" onclick="sec(${i},this)"><span class="harf">${harfler[i]}</span><span>${o}</span></button>`).join('')+'</div>';
+  } else if(tip==='siralama'){
+    cevapHtml='<p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center">↑ ↓ butonlarıyla sıralayın</p><div class="siralama" id="sirListe">'+siraliOgeler.map((o,i)=>`<div class="sir-item" id="si-${i}"><div class="sir-no">${i+1}</div><div class="sir-text">${o}</div><div style="display:flex;flex-direction:column;gap:2px"><button onclick="sirTasi(${i},-1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">↑</button><button onclick="sirTasi(${i},1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">↓</button></div></div>`).join('')+'</div>';
+  } else if(tip==='cagrisim'){
+    cevapHtml='<label class="label">Aklınıza gelen kelimeleri ekleyin (max 5)</label><div class="chips" id="chips"></div><div class="chip-row"><input class="chip-inp" id="cinp" placeholder="Kelime..." maxlength="30" onkeydown="if(event.key===\'Enter\')ekle()"/><button class="chip-ekle" onclick="ekle()">Ekle</button></div>';
+  }
+  const isimHtml=isimSor?'<label class="label">Adınız Soyadınız</label><input class="f" id="isimInp" placeholder="Ali Yılmaz" maxlength="50"/>':'';
+  goster(`
+    <div class="kart">
+      <span class="kart-tip">${TIPLER[tip]||tip}</span>
+      <span class="kart-no">Soru ${idx+1}/${toplam}</span>
+      <div class="kart-soru">${esc(soru.soru||soru.question||'')}</div>
+    </div>
+    ${isimHtml}
+    ${cevapHtml}
+    <button class="btn" id="gBtn" onclick="gonder()">Gönder</button>
+  `);
+}
+
+function sec(i,el){
+  el.closest('.secenekler').querySelectorAll('.sec-btn').forEach(b=>b.classList.remove('secili'));
+  el.classList.add('secili');secili=i;
+}
+function ekle(){
+  const inp=document.getElementById('cinp');
+  const v=inp.value.trim();
+  if(!v||cagrisimler.length>=5||cagrisimler.includes(v)){inp.value='';return;}
+  cagrisimler.push(v);inp.value='';
+  document.getElementById('chips').innerHTML=cagrisimler.map(k=>`<span class="chip">${k}</span>`).join('');
+}
+function sirTasi(i,yon){
+  const j=i+yon;
+  if(j<0||j>=siraliOgeler.length)return;
+  const tmp=siraliOgeler[i];siraliOgeler[i]=siraliOgeler[j];siraliOgeler[j]=tmp;
+  const l=document.getElementById('sirListe');
+  l.innerHTML=siraliOgeler.map((o,idx)=>`<div class="sir-item" id="si-${idx}"><div class="sir-no">${idx+1}</div><div class="sir-text">${o}</div><div style="display:flex;flex-direction:column;gap:2px"><button onclick="sirTasi(${idx},-1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">↑</button><button onclick="sirTasi(${idx},1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">↓</button></div></div>`).join('');
+}
+
+async function gonder(){
+  // İsim
+  const isimInp=document.getElementById('isimInp');
+  if(isimInp){
+    const v=isimInp.value.trim();
+    if(!v){isimInp.focus();return;}
+    isim=v;
+  }
+  if(!isim){alert('Adınızı girin.');return;}
+  // Cevap
+  const tip=mevcutSoru?.tip||'tanim';
+  let cevap=null;
+  if(tip==='tanim'||tip==='yansima'){
+    cevap=document.getElementById('cevap')?.value?.trim();
+    if(!cevap||cevap.length<3){document.getElementById('cevap')?.focus();return;}
+  } else if(tip==='yoklama'||tip==='secmeli'){
+    if(secili===null){alert('Lütfen bir seçenek seçin.');return;}
+    cevap=String(secili);
+  } else if(tip==='siralama'){
+    cevap=siraliOgeler.join('||');
+  } else if(tip==='cagrisim'){
+    if(!cagrisimler.length){alert('En az bir kelime ekleyin.');return;}
+    cevap=cagrisimler.join(',');
+  }
+  const btn=document.getElementById('gBtn');
+  btn.disabled=true;btn.textContent='Gönderiliyor...';
+  try{
+    await responsesRef.push({name:isim,text:String(cevap),tip,soruIdx,oturumId:oturumId||'x',ts:Date.now()});
+    gonderildi[soruIdx]=true;
+    goster('<div class="merkez"><div class="ikon">✅</div><div class="bas">Yanıtınız alındı!</div><div class="alt">Sonraki soru bekleniyor...</div></div>');
+  }catch(e){
+    btn.disabled=false;btn.textContent='Gönder';
+    alert('Hata: '+e.message);
+  }
+}
+
+function goster(html){document.getElementById('icerik').innerHTML=html;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>

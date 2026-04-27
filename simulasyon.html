@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simülasyon Paneli — Kamu Ekonomisi</title>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1a1a2e;--paper:#f5f0e8;--accent:#c84b31;--accent2:#2d6a4f;--accent3:#457b9d;--muted:#8a8070;--surface:#ede8de;--border:#d4cfc4;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;overflow:hidden;}
+header{background:var(--ink);color:var(--paper);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+header h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.live-b{display:flex;align-items:center;gap:6px;font-size:12px;opacity:0.7;}
+.dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 1.5s infinite;}
+.dot.off{background:#888;animation:none;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.layout{display:grid;grid-template-columns:280px 1fr 240px;height:calc(100vh - 44px);}
+
+/* SOL */
+.sol{border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
+.sol-header{padding:12px 14px;border-bottom:1px solid var(--border);}
+.sol-baslik{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;}
+.sahne-tab{display:flex;gap:4px;margin-bottom:0;}
+.stab{flex:1;padding:7px 4px;border-radius:7px;border:1.5px solid var(--border);background:white;cursor:pointer;text-align:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;transition:all 0.15s;color:var(--muted);}
+.stab.aktif{background:var(--ink);color:white;border-color:var(--ink);}
+.stab.tamamlandi{background:var(--accent2);color:white;border-color:var(--accent2);}
+.sol-icerik{flex:1;overflow-y:auto;padding:12px 14px;}
+.sahne-kart{background:white;border:1.5px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;}
+.sk-baslik{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:4px;}
+.sk-alt{font-size:11px;color:var(--muted);line-height:1.5;}
+.rol-item{background:var(--surface);border-radius:8px;padding:8px 10px;margin-bottom:5px;display:flex;align-items:center;gap:8px;}
+.rol-renk{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.rol-isim-text{font-size:12px;font-weight:600;flex:1;}
+.rol-kisi{font-size:11px;color:var(--muted);}
+.sol-footer{padding:10px 14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;}
+
+/* ORTA */
+.orta{display:flex;flex-direction:column;overflow:hidden;}
+.orta-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0;}
+.asama-bilgi{display:flex;align-items:center;gap:10px;}
+.asama-badge{font-size:11px;font-family:'Syne',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;border-radius:20px;background:var(--surface);color:var(--muted);}
+.asama-badge.aktif{background:var(--accent);color:white;}
+.asama-badge.oylama{background:var(--accent3);color:white;}
+.asama-badge.kavram{background:var(--accent2);color:white;}
+.orta-aksiyonlar{display:flex;gap:6px;}
+.btn{padding:8px 14px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;transition:all 0.15s;color:var(--ink);}
+.btn:hover{background:var(--surface);}
+.btn.primary{background:var(--accent2);color:white;border-color:var(--accent2);}
+.btn.primary:hover{background:#1e5438;}
+.btn.danger{background:var(--accent);color:white;border-color:var(--accent);}
+.btn.mavi{background:var(--accent3);color:white;border-color:var(--accent3);}
+.btn:disabled{opacity:0.35;cursor:default;}
+.orta-icerik{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
+
+/* Soru göster */
+.buyuk-soru{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;border-left:4px solid var(--accent);padding-left:14px;line-height:1.4;}
+.stat-row{display:flex;gap:8px;}
+.stat{background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;text-align:center;}
+.stat-n{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;}
+.stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px;}
+.gorsel-kutu{background:white;border:1px solid var(--border);border-radius:10px;padding:14px;}
+.gorsel-baslik{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600;margin-bottom:10px;}
+.oy-bars{display:flex;flex-direction:column;gap:8px;}
+.ob-row{display:flex;align-items:center;gap:8px;}
+.ob-label{font-size:12px;flex:0 0 200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ob-wrap{flex:1;background:var(--surface);border-radius:5px;height:28px;overflow:hidden;}
+.ob-fill{height:100%;border-radius:5px;transition:width 0.5s;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:600;color:white;}
+.ob-n{font-size:12px;font-weight:700;flex:0 0 32px;text-align:right;}
+
+/* Rol listesi */
+.rol-liste-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.rol-kart-mini{background:white;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;}
+.rkm-tip{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px;}
+.rkm-isim{font-size:13px;font-weight:600;}
+.rkm-kisi{font-size:11px;color:var(--accent2);margin-top:2px;}
+
+/* Kura modalı */
+.modal-arka{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
+.modal-arka.acik{display:flex;}
+.modal{background:white;border-radius:16px;padding:24px;width:460px;max-height:80vh;overflow-y:auto;}
+.modal-baslik{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:16px;}
+.talep-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface);border-radius:7px;margin-bottom:5px;}
+.talep-isim{font-size:13px;font-weight:600;}
+.kura-input{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;font-family:'DM Sans',sans-serif;}
+.kura-input:focus{outline:none;border-color:var(--accent2);}
+.modal-footer{display:flex;gap:8px;margin-top:14px;}
+.btn-kura{flex:1;padding:11px;background:var(--accent2);color:white;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-kapat{padding:11px 16px;background:white;border:1.5px solid var(--border);border-radius:9px;font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;}
+
+/* Kavram seçici */
+.kavram-secici{display:flex;flex-direction:column;gap:8px;}
+.kavram-btn{padding:12px 14px;border-radius:9px;border:1.5px solid var(--border);background:white;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;font-size:13px;transition:all 0.15s;}
+.kavram-btn:hover{border-color:var(--accent2);}
+.kavram-btn.secili{border-color:var(--accent2);background:#e8f5e9;}
+.kavram-btn strong{display:block;margin-bottom:2px;font-family:'Syne',sans-serif;}
+
+/* SAĞ */
+.sag{border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
+.sb-bolum{padding:10px 12px;border-bottom:1px solid var(--border);}
+.sb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600;margin-bottom:6px;}
+.katilimci-list{flex:1;overflow-y:auto;padding:6px 10px;}
+.kat-item{font-size:11px;padding:5px 7px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+.kat-rol{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--muted);}
+.kat-isim{flex:1;}
+
+.bos{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--muted);text-align:center;padding:30px;font-size:13px;line-height:1.7;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Simülasyon Paneli — Kamu Ekonomisi: Siyasi Süreç</h1>
+  <div class="live-b"><div class="dot off" id="liveDot"></div><span id="liveStatus">Hazır</span></div>
+</header>
+
+<div class="layout">
+  <!-- SOL: Sahne seçici -->
+  <div class="sol">
+    <div class="sol-header">
+      <div class="sol-baslik">Sahneler</div>
+      <div class="sahne-tab">
+        <button class="stab aktif" id="stab1" onclick="sahneSecTab(1)">1</button>
+        <button class="stab" id="stab2" onclick="sahneSecTab(2)">2</button>
+        <button class="stab" id="stab3" onclick="sahneSecTab(3)">3</button>
+      </div>
+    </div>
+    <div class="sol-icerik" id="solIcerik"></div>
+    <div class="sol-footer">
+      <button class="btn primary" id="btnBaslat" onclick="simulasyonBaslat()">Simülasyonu Başlat</button>
+      <button class="btn danger" id="btnBitir" onclick="simulasyonBitir()" disabled style="display:none">Simülasyonu Bitir</button>
+    </div>
+  </div>
+
+  <!-- ORTA -->
+  <div class="orta">
+    <div class="orta-header">
+      <div class="asama-bilgi">
+        <span class="asama-badge" id="asamaBadge">Başlamadı</span>
+        <span style="font-size:13px;color:var(--muted)" id="asamaAciklama">Simülasyonu başlatın</span>
+      </div>
+      <div class="orta-aksiyonlar" id="aksiyonlar"></div>
+    </div>
+    <div class="orta-icerik" id="ortaIcerik">
+      <div class="bos">Simülasyonu başlatmak için sol alttaki butona tıklayın.</div>
+    </div>
+  </div>
+
+  <!-- SAĞ -->
+  <div class="sag">
+    <div class="sb-bolum">
+      <div class="sb-label">Öğrenci Bağlantısı</div>
+      <div id="qrDiv" style="display:flex;justify-content:center;margin:4px 0"></div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;word-break:break-all;line-height:1.4" id="qrUrl"></div>
+    </div>
+    <div class="sb-bolum">
+      <div class="sb-label">Katılımcılar <span id="katSayac" style="color:var(--accent2)">(0)</span></div>
+    </div>
+    <div class="katilimci-list" id="katList"></div>
+  </div>
+</div>
+
+<!-- Kura Modalı -->
+<div class="modal-arka" id="kuraModal">
+  <div class="modal">
+    <div class="modal-baslik" id="kuraModalBaslik">Rol Dağıtımı — Kura</div>
+    <div id="kuraIcerik"></div>
+    <div class="modal-footer">
+      <button class="btn-kapat" onclick="kuraKapat()">İptal</button>
+      <button class="btn-kura" onclick="kuraYap()">Kura Çek ve Ata</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const FB={apiKey:'AIzaSyDFwRi7C49WQUjZlJEDEZNtg0Q82B1zeyM',projectId:'vergi-dc18f',databaseURL:'https://vergi-dc18f-default-rtdb.firebaseio.com'};
+const STUDENT_URL='https://benevolent-sawine-b2cac2.netlify.app/simulasyon-ogrenci.html';
+
+const SAHNELER={
+  1:{
+    isim:'Seçmen Sahnesi',
+    aciklama:'İki aday profili sunulur. Sınıf 30 saniyede oy kullanır.',
+    kavram_aday:'Rasyonel bilgisizlik',
+    kavram_aciklama:'Bir seçmenin tek oyunun seçim sonucuna etkisi sıfıra yakın. Bu yüzden derinlemesine araştırmak rasyonel değil — seçmen en tanıdık, en kolay anlaşılan adayı seçer.',
+    roller:[
+      {id:'a1',isim:'Aday A — Reform',tip:'politikaci',aciklama:'Uzun vadeli eğitim reformu öneriyorsun. Programın karmaşık ama gerçekten etkili.',gorev:'Kendini tanıt, programının 3 ana maddesini açıkla. Teknik detay ver.',sahne_gorevi:'30 saniyede seçmenlere hitap et. Programını anlat.'},
+      {id:'a2',isim:'Aday B — Vaat',tip:'secmen',aciklama:'Basit ve popüler vaatler veriyorsun: "KYK\'yı ikiye katlayacağım, ulaşım ücretsiz olacak."',gorev:'Somut vaat ver. Nasıl finanse edeceğini sorularsa geçiştir.',sahne_gorevi:'30 saniyede seçmenlere hitap et. Vaatlerini söyle.'},
+      {id:'m1',isim:'Seçmen Temsilcisi',tip:'secmen',aciklama:'Kararsız seçmeni temsil ediyorsun.',gorev:'Her iki adaya birer soru sor. Sonra sınıf adına kararını açıkla.',sahne_gorevi:'Adaylara sorularını sor.'}
+    ],
+    oylama_soru:'Hangi adayı seçerdiniz?',
+    oylama_secenekler:['Aday A — Reform programı','Aday B — Somut vaatler','Hiçbirini, başka aday isterim']
+  },
+  2:{
+    isim:'Politikacı Sahnesi',
+    aciklama:'Hükümet bütçe kararı alıyor. İktidar ve muhalefet karşı karşıya.',
+    kavram_aday:'Kısa vadeli önyargı',
+    kavram_aciklama:'Politikacının siyasi ufku seçim takviminden uzun değil. Seçimden önce görünür fayda yaratmak, seçimden sonra etkisi olacak yatırımı yapmaktan daha rasyonel — siyaset için.',
+    roller:[
+      {id:'p1',isim:'Başbakan',tip:'politikaci',aciklama:'Hükümeti temsil ediyorsun. 2 yıl sonra seçim var.',gorev:'Bütçede eğitime mi, altyapıya mı ağırlık verirsin? Kararını ve gerekçeni açıkla.',sahne_gorevi:'Bütçe teklifini sun. Seçmen tepkisini izle.'},
+      {id:'p2',isim:'Maliye Bakanı',tip:'politikaci',aciklama:'Bütçe disiplini taraftarısın. Açık vermemek önceliğin.',gorev:'Başbakanın popülist harcamalarını frenlemeye çalış.',sahne_gorevi:'Harcama tekliflerine itiraz et, bütçe kısıtını savun.'},
+      {id:'p3',isim:'Muhalefet Lideri',tip:'secmen',aciklama:'Hükümetin kararını eleştireceksin.',gorev:'En zayıf noktayı bul ve vur. Alternatif sun.',sahne_gorevi:'Hükümeti eleştir, alternatif bütçe teklifini açıkla.'},
+      {id:'p4',isim:'Lobi Temsilcisi',tip:'burokrat',aciklama:'İş dünyasını temsil ediyorsun. Vergi artışına karşısın.',gorev:'Politikacılarla görüş, vergi artışını engellemeye çalış.',sahne_gorevi:'Politikacılara baskı uygula.'},
+      {id:'p5',isim:'Muhalefet Milletvekili',tip:'secmen',aciklama:'Hükümetin bütçesine itiraz edeceksin.',gorev:'Harcama kalemlerini sorgula.',sahne_gorevi:'Hükümete soru yönelt.'}
+    ],
+    oylama_soru:'Hükümetin bütçe kararını doğru buldunuz mu?',
+    oylama_secenekler:['Evet, doğru tercih','Hayır, yanlış öncelikler','Kısmen doğru, ama eksik']
+  },
+  3:{
+    isim:'Bürokrat Sahnesi',
+    aciklama:'Bütçe kısılacak. Her bakanlık masada. Kim kesecek?',
+    kavram_aday:'Bürokratik büyüme güdüsü',
+    kavram_aciklama:'Bütçe ve kadro büyütmek bürokratın bireysel çıkarına hizmet eder — kariyer, prestij, kaynak. Bu yüzden hiçbir bakanlık kendi bütçesini gönüllü kısmaz. Sistem bu davranışı ödüllendiriyor.',
+    roller:[
+      {id:'b1',isim:'Eğitim Bakanlığı Müsteşarı',tip:'burokrat',aciklama:'Eğitim bütçesi kesilirse büyük kayıp. Bunu savunmalısın.',gorev:'Eğitim bütçesinin neden kesilemeyeceğini anlat. Başka bakanlıktan kesi öner.',sahne_gorevi:'Bütçeni savun, başkasının kesilmesini öner.'},
+      {id:'b2',isim:'Sağlık Bakanlığı Müsteşarı',tip:'burokrat',aciklama:'Sağlık bütçesi kutsal. Bunu herkes kabul etmeli.',gorev:'Sağlık bütçesinin dokunulmaz olduğunu savun.',sahne_gorevi:'Bütçeni savun, başkasının kesilmesini öner.'},
+      {id:'b3',isim:'Ulaştırma Bakanlığı Müsteşarı',tip:'burokrat',aciklama:'Altyapı projelerin yarıda kalabilir. Kesilemezsin.',gorev:'Projelerinin yarıda kalmayacağını garanti et.',sahne_gorevi:'Bütçeni savun, başkasının kesilmesini öner.'},
+      {id:'b4',isim:'Hazine Müsteşarı',tip:'politikaci',aciklama:'Toplam bütçeyi 15 birim kısmak zorundasın. Birisi vermeli.',gorev:'Müzakereyi yönet. Kim kesecek? Karar al.',sahne_gorevi:'Kimin kesmesi gerektiğine karar ver.'}
+    ],
+    oylama_soru:'Hiçbir bakanlık gönüllü kesmedi. Bu neden?',
+    oylama_secenekler:['Çünkü kötü insanlar','Çünkü sistem böyle davranmayı ödüllendiriyor','Çünkü bütçeler gerçekten yeterliydi','Çünkü liderlik eksikliği vardı']
+  }
+};
+
+let db,simRef,oyRef,rolTalepRef,katilimciRef;
+let aktifSahne=1;
+let simBasladi=false;
+let mevcutAsama='bekle';
+let atananRoller={};
+let katilimcilar={};
+let oylar=[];
+let seciliKavram=null;
+let oturumId='';
+let kuraSahne=1;
+
+window.onload=()=>{
+  try{const app=firebase.initializeApp(FB,'sim-ogretmen');db=firebase.database(app);}
+  catch(e){db=firebase.database(firebase.app('sim-ogretmen'));}
+  simRef=db.ref('simulation');
+  oyRef=db.ref('sim_votes');
+  rolTalepRef=db.ref('sim_rol_talep');
+  katilimciRef=db.ref('sim_katilimci');
+
+  new QRCode(document.getElementById('qrDiv'),{text:STUDENT_URL,width:160,height:160,colorDark:'#1a1a2e',colorLight:'#f5f0e8'});
+  document.getElementById('qrUrl').textContent=STUDENT_URL;
+
+  katilimciRef.on('value',snap=>{
+    katilimcilar=snap.val()||{};
+    renderKatilimcilar();
+  });
+  oyRef.on('value',snap=>{
+    const all=snap.val()||{};
+    oylar=Object.values(all).filter(o=>o.oturumId===oturumId&&o.sahne===aktifSahne);
+    renderOylar();
+  });
+
+  sahneSecTab(1);
+};
+
+function sahneSecTab(n){
+  aktifSahne=n;
+  [1,2,3].forEach(i=>{
+    const t=document.getElementById('stab'+i);
+    t.className='stab'+(i===n?' aktif':'');
+  });
+  renderSolIcerik();
+  if(simBasladi) renderOrta();
+}
+
+function renderSolIcerik(){
+  const s=SAHNELER[aktifSahne];
+  const roller=atananRoller[aktifSahne]||{};
+  let html=`
+    <div class="sahne-kart">
+      <div class="sk-baslik">${s.isim}</div>
+      <div class="sk-alt">${s.aciklama}</div>
+    </div>
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin:8px 0 6px">Roller (${s.roller.length} kişi)</div>`;
+  s.roller.forEach(r=>{
+    const atanan=roller[r.id];
+    const renkler={politikaci:'#2d6a4f',secmen:'#c84b31',burokrat:'#457b9d'};
+    html+=`<div class="rol-item">
+      <div class="rol-renk" style="background:${renkler[r.tip]||'#888'}"></div>
+      <div style="flex:1">
+        <div class="rol-isim-text">${esc(r.isim)}</div>
+        <div class="rol-kisi">${atanan?esc(atanan):' — atanmadı'}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('solIcerik').innerHTML=html;
+}
+
+function simulasyonBaslat(){
+  oturumId='sim_'+Date.now();
+  simBasladi=true;
+  document.getElementById('btnBaslat').style.display='none';
+  document.getElementById('btnBitir').style.display='block';
+  document.getElementById('btnBitir').disabled=false;
+  document.getElementById('liveDot').className='dot';
+  document.getElementById('liveStatus').textContent='Canlı';
+  sahneBaslat(1);
+}
+
+function sahneBaslat(n){
+  aktifSahne=n;
+  mevcutAsama='rol_dagitim';
+  atananRoller[n]=atananRoller[n]||{};
+  sahneSecTab(n);
+  rolTalepRef.remove();
+
+  simRef.set({
+    active:true,oturumId,sahne:n,asama:'rol_dagitim',
+    roller:atananRoller[n]&&Object.keys(atananRoller[n]).length>0?buildRollerObj(n):null
+  });
+  renderOrta();
+}
+
+function renderOrta(){
+  const s=SAHNELER[aktifSahne];
+  const asamaLabels={rol_dagitim:'Rol Dağıtımı',hazirlik:'Hazırlık',sahne:'Sahne Canlı',oylama:'Oylama',kavram:'Kavram'};
+  const asamaRenkler={rol_dagitim:'',hazirlik:'',sahne:'aktif',oylama:'oylama',kavram:'kavram'};
+  document.getElementById('asamaBadge').textContent=asamaLabels[mevcutAsama]||mevcutAsama;
+  document.getElementById('asamaBadge').className='asama-badge '+(asamaRenkler[mevcutAsama]||'');
+  document.getElementById('asamaAciklama').textContent=s.isim;
+
+  let aksHtml='';
+  if(mevcutAsama==='rol_dagitim'){
+    aksHtml=`<button class="btn mavi" onclick="kuraAc()">Kura Çek</button>
+             <button class="btn primary" onclick="asamaGec('hazirlik')">Hazırlığa Geç</button>`;
+  } else if(mevcutAsama==='hazirlik'){
+    aksHtml=`<button class="btn primary" onclick="asamaGec('sahne')">Sahneyi Başlat</button>`;
+  } else if(mevcutAsama==='sahne'){
+    aksHtml=`<button class="btn mavi" onclick="asamaGec('oylama')">Oylama Başlat</button>`;
+  } else if(mevcutAsama==='oylama'){
+    aksHtml=`<button class="btn primary" onclick="asamaGec('kavram')">Kavramı Göster</button>`;
+  } else if(mevcutAsama==='kavram'){
+    if(aktifSahne<3){
+      aksHtml=`<button class="btn primary" onclick="sahneBaslat(${aktifSahne+1})">Sonraki Sahne</button>`;
+    } else {
+      aksHtml=`<button class="btn danger" onclick="simulasyonBitir()">Simülasyonu Bitir</button>`;
+    }
+  }
+  document.getElementById('aksiyonlar').innerHTML=aksHtml;
+
+  let html='';
+  if(mevcutAsama==='rol_dagitim'){
+    html+=`<div class="buyuk-soru">${s.isim} — Rol Dağıtımı</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7">${s.aciklama}<br><br>Öğrenciler telefonda gönüllü oldu. "Kura Çek" ile rolleri ata, sonra "Hazırlığa Geç" de.</p>
+    <div class="gorsel-kutu">
+      <div class="gorsel-baslik">Rol Listesi</div>
+      <div class="rol-liste-grid">`;
+    const roller=atananRoller[aktifSahne]||{};
+    s.roller.forEach(r=>{
+      const atanan=roller[r.id]||'—';
+      const renkler={politikaci:'#2d6a4f',secmen:'#c84b31',burokrat:'#457b9d'};
+      html+=`<div class="rol-kart-mini">
+        <div class="rkm-tip" style="color:${renkler[r.tip]}">${r.tip}</div>
+        <div class="rkm-isim">${esc(r.isim)}</div>
+        <div class="rkm-kisi">${esc(atanan)}</div>
+      </div>`;
+    });
+    html+=`</div></div>`;
+  } else if(mevcutAsama==='hazirlik'){
+    html+=`<div class="buyuk-soru">${s.isim} — Hazırlık</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7">Rol alan öğrenciler telefonlarında görevlerini okuyor. 2-3 dakika verin. Hazır olduklarında "Sahneyi Başlat" deyin.</p>`;
+    html+=renderRolListesiHTML();
+  } else if(mevcutAsama==='sahne'){
+    html+=`<div class="buyuk-soru">${s.isim} — Canlı</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7">Sahne oynanıyor. Rol alan öğrencilere söz verin. Kalan sınıf izliyor. Hazır olduğunuzda "Oylama Başlat" deyin.</p>`;
+    html+=renderRolListesiHTML();
+  } else if(mevcutAsama==='oylama'){
+    html+=`<div class="buyuk-soru">${esc(s.oylama_soru)}</div>`;
+    html+=`<div class="stat-row">
+      <div class="stat"><div class="stat-n" id="toplamOy">0</div><div class="stat-l">Oy Sayısı</div></div>
+      <div class="stat"><div class="stat-n" id="katilimYuzde">%0</div><div class="stat-l">Katılım</div></div>
+    </div>`;
+    html+=`<div class="gorsel-kutu"><div class="gorsel-baslik">Canlı Sonuçlar</div><div class="oy-bars" id="oyBarsDiv"></div></div>`;
+  } else if(mevcutAsama==='kavram'){
+    const kavramlar=[
+      {isim:s.kavram_aday,aciklama:s.kavram_aciklama},
+    ];
+    html+=`<div class="buyuk-soru">Bu Sahneden Kavram</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Ekranda gösterilecek kavramı seçin:</p>
+    <div class="kavram-secici">`;
+    kavramlar.forEach((k,i)=>{
+      html+=`<div class="kavram-btn ${seciliKavram===i?'secili':''}" onclick="kavramSec(${i},'${esc(k.isim)}','${esc(k.aciklama)}')">
+        <strong>${esc(k.isim)}</strong>${esc(k.aciklama)}
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+  document.getElementById('ortaIcerik').innerHTML=html;
+  if(mevcutAsama==='oylama') renderOylar();
+}
+
+function renderRolListesiHTML(){
+  const s=SAHNELER[aktifSahne];
+  const roller=atananRoller[aktifSahne]||{};
+  let html=`<div class="gorsel-kutu"><div class="gorsel-baslik">Aktif Roller</div><div class="rol-liste-grid">`;
+  s.roller.forEach(r=>{
+    const atanan=roller[r.id]||'—';
+    const renkler={politikaci:'#2d6a4f',secmen:'#c84b31',burokrat:'#457b9d'};
+    html+=`<div class="rol-kart-mini">
+      <div class="rkm-tip" style="color:${renkler[r.tip]}">${r.isim}</div>
+      <div class="rkm-kisi">${esc(atanan)}</div>
+    </div>`;
+  });
+  html+=`</div></div>`;
+  return html;
+}
+
+function renderOylar(){
+  const s=SAHNELER[aktifSahne];
+  const secenekler=s.oylama_secenekler||[];
+  const sayilar=secenekler.map((_,i)=>oylar.filter(o=>o.oy===i).length);
+  const toplam=oylar.length;
+  const katSayisi=Object.keys(katilimcilar).length||1;
+
+  const el=document.getElementById('toplamOy');
+  if(el) el.textContent=toplam;
+  const el2=document.getElementById('katilimYuzde');
+  if(el2) el2.textContent='%'+Math.round(toplam/katSayisi*100);
+
+  const barsDiv=document.getElementById('oyBarsDiv');
+  if(!barsDiv) return;
+  const renkler=['#c84b31','#2d6a4f','#457b9d','#e9c46a'];
+  const max=Math.max(...sayilar,1);
+  barsDiv.innerHTML=secenekler.map((s2,i)=>`
+    <div class="ob-row">
+      <div class="ob-label">${esc(s2)}</div>
+      <div class="ob-wrap">
+        <div class="ob-fill" style="width:${Math.round(sayilar[i]/max*100)}%;background:${renkler[i]}">${sayilar[i]>0?sayilar[i]:''}</div>
+      </div>
+      <div class="ob-n">${sayilar[i]}</div>
+    </div>`).join('');
+}
+
+function asamaGec(asama){
+  mevcutAsama=asama;
+  const s=SAHNELER[aktifSahne];
+  const guncelleme={active:true,oturumId,sahne:aktifSahne,asama};
+  if(asama==='oylama'){
+    guncelleme.oylama_soru=s.oylama_soru;
+    guncelleme.oylama_secenekler=s.oylama_secenekler;
+  }
+  if(asama==='kavram'&&seciliKavram!==null){
+    guncelleme.kavram={isim:s.kavram_aday,aciklama:s.kavram_aciklama};
+  }
+  const roller=buildRollerObj(aktifSahne);
+  if(roller) guncelleme.roller=roller;
+  simRef.set(guncelleme);
+  renderOrta();
+}
+
+function kavramSec(i,isim,aciklama){
+  seciliKavram=i;
+  simRef.update({asama:'kavram',kavram:{isim,aciklama}});
+  renderOrta();
+}
+
+function simulasyonBitir(){
+  simRef.set({active:false,oturumId,sahne:aktifSahne,asama:'bitis'});
+  document.getElementById('liveDot').className='dot off';
+  document.getElementById('liveStatus').textContent='Bitti';
+  document.getElementById('btnBitir').disabled=true;
+}
+
+// KURA
+function kuraAc(){
+  kuraSahne=aktifSahne;
+  const s=SAHNELER[kuraSahne];
+  rolTalepRef.once('value',snap=>{
+    const talepler=Object.values(snap.val()||{});
+    const isimler=talepler.map(t=>t.isim).filter(Boolean);
+    let html=`<p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">Gönüllü olmayan roller için isim yazabilirsin. Kura butonu rastgele atar.</p>`;
+    html+=`<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Gönüllüler (${isimler.length})</div>`;
+    if(isimler.length){
+      isimler.forEach(n=>{html+=`<div class="talep-item"><span class="talep-isim">${esc(n)}</span></div>`;});
+    } else {
+      html+=`<div style="font-size:12px;color:var(--muted);padding:8px 0">Henüz gönüllü yok.</div>`;
+    }
+    html+=`<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:12px 0 8px">Roller (${s.roller.length})</div>`;
+    s.roller.forEach(r=>{
+      const mevcut=atananRoller[kuraSahne]?.[r.id]||'';
+      html+=`<div style="margin-bottom:6px"><div style="font-size:11px;color:var(--muted);margin-bottom:3px">${esc(r.isim)}</div>
+      <input class="kura-input" id="rol_${r.id}" value="${esc(mevcut)}" placeholder="İsim gir veya kura çek..."/></div>`;
+    });
+    document.getElementById('kuraIcerik').innerHTML=html;
+    document.getElementById('kuraModal').classList.add('acik');
+
+    window._kuraGonulluler=isimler;
+  });
+}
+
+function kuraYap(){
+  const s=SAHNELER[kuraSahne];
+  const gonulluler=[...window._kuraGonulluler||[]];
+  if(!atananRoller[kuraSahne]) atananRoller[kuraSahne]={};
+
+  s.roller.forEach(r=>{
+    const inp=document.getElementById('rol_'+r.id);
+    if(inp){
+      let val=inp.value.trim();
+      if(!val&&gonulluler.length>0){
+        const idx=Math.floor(Math.random()*gonulluler.length);
+        val=gonulluler.splice(idx,1)[0];
+      }
+      if(val) atananRoller[kuraSahne][r.id]=val;
+    }
+  });
+
+  const rollerObj=buildRollerObj(kuraSahne);
+  simRef.update({roller:rollerObj});
+
+  s.roller.forEach(r=>{
+    const kisi=atananRoller[kuraSahne]?.[r.id];
+    if(kisi){
+      katilimciRef.child(d2key(kisi)).set({isim:kisi,rol:r.isim,sahne:kuraSahne,ts:Date.now()});
+    }
+  });
+
+  kuraKapat();
+  renderSolIcerik();
+  renderOrta();
+}
+
+function buildRollerObj(sahne){
+  const s=SAHNELER[sahne];
+  const atanan=atananRoller[sahne]||{};
+  if(!Object.keys(atanan).length) return null;
+  const obj={};
+  s.roller.forEach(r=>{
+    const kisi=atanan[r.id];
+    if(kisi) obj[kisi]={...r,kisi};
+  });
+  return Object.keys(obj).length?obj:null;
+}
+
+function kuraKapat(){document.getElementById('kuraModal').classList.remove('acik');}
+
+function renderKatilimcilar(){
+  const list=document.getElementById('katList');
+  const items=Object.values(katilimcilar);
+  document.getElementById('katSayac').textContent='('+items.length+')';
+  if(!items.length){list.innerHTML='<div style="padding:12px;font-size:12px;color:var(--muted);text-align:center">Henüz kimse katılmadı</div>';return;}
+  const renkler={politikaci:'#2d6a4f',secmen:'#c84b31',burokrat:'#457b9d'};
+  list.innerHTML=items.map(k=>`
+    <div class="kat-item">
+      <div class="kat-rol" style="background:${renkler[k.rol?.toLowerCase()]||'#888'}"></div>
+      <div class="kat-isim">${esc(k.isim)}</div>
+      <div style="font-size:10px;color:var(--muted)">${esc(k.rol||'seçmen')}</div>
+    </div>`).join('');
+}
+
+function d2key(s){return String(s).replace(/[^a-zA-Z0-9]/g,'_').substring(0,40);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>

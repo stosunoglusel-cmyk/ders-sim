@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Simülasyon</title>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1a1a2e;--paper:#f5f0e8;--accent:#c84b31;--accent2:#2d6a4f;--accent3:#457b9d;--muted:#8a8070;--surface:#ede8de;--border:#d4cfc4;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
+header{background:var(--ink);color:var(--paper);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+header h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.sahne-badge{font-size:11px;background:var(--accent);color:white;padding:3px 10px;border-radius:20px;font-family:'Syne',sans-serif;font-weight:600;}
+.ilerleme{height:3px;background:rgba(255,255,255,0.15);}
+.ilerleme-dolu{height:100%;background:#4ade80;transition:width 0.6s;}
+.content{padding:20px;max-width:480px;margin:0 auto;}
+.merkez{text-align:center;padding:60px 20px;}
+.buyuk-ikon{font-size:52px;margin-bottom:16px;}
+.bas{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;line-height:1.3;}
+.alt{font-size:14px;color:var(--muted);line-height:1.7;}
+.rol-kart{background:var(--ink);color:var(--paper);border-radius:16px;padding:20px;margin-bottom:16px;}
+.rol-tip{font-size:10px;text-transform:uppercase;letter-spacing:2px;opacity:0.6;margin-bottom:8px;}
+.rol-isim{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:10px;}
+.rol-aciklama{font-size:13px;opacity:0.85;line-height:1.7;}
+.gorev-kutu{background:white;border:2px solid var(--accent);border-radius:12px;padding:16px;margin-bottom:16px;}
+.gorev-baslik{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:8px;}
+.gorev-text{font-size:14px;line-height:1.7;color:var(--ink);}
+.oy-baslik{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:14px;line-height:1.4;}
+.oy-secenekler{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.oy-btn{width:100%;padding:14px 16px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;border:2px solid var(--border);background:white;color:var(--ink);text-align:left;display:flex;align-items:center;gap:12px;transition:all 0.15s;font-weight:500;}
+.oy-btn:hover{border-color:var(--accent2);}
+.oy-btn.secili{border-color:var(--accent2);background:var(--accent2);color:white;}
+.oy-btn.secili .oy-harf{background:rgba(255,255,255,0.25);color:white;}
+.oy-harf{width:28px;height:28px;border-radius:7px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;}
+.rol-isteme{background:white;border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;margin-bottom:16px;}
+.rol-isteme-baslik{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px;}
+.rol-isteme-alt{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.btn-evet{width:100%;padding:14px;background:var(--accent2);color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;}
+.btn-hayir{width:100%;padding:14px;background:white;color:var(--muted);border:2px solid var(--border);border-radius:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;}
+.btn-gonder{width:100%;padding:15px;background:var(--accent);color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;}
+.btn-gonder:disabled{background:var(--muted);cursor:default;}
+.izleyici-bilgi{background:var(--surface);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;color:var(--muted);text-align:center;line-height:1.6;}
+.sahne-bilgi{background:var(--ink);color:var(--paper);border-radius:14px;padding:16px;margin-bottom:16px;}
+.sahne-no{font-size:10px;text-transform:uppercase;letter-spacing:2px;opacity:0.6;margin-bottom:6px;}
+.sahne-baslik{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:8px;}
+.sahne-alt{font-size:12px;opacity:0.75;line-height:1.6;}
+.onay-ekran{text-align:center;padding:40px 20px;}
+.onay-ikon{font-size:44px;margin-bottom:14px;}
+.onay-bas{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;}
+.onay-alt{font-size:13px;color:var(--muted);line-height:1.6;}
+.isim-alani{margin-bottom:16px;}
+.isim-label{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:6px;display:block;}
+input.isim-inp{width:100%;padding:13px 14px;border:2px solid var(--border);border-radius:10px;font-size:15px;font-family:'DM Sans',sans-serif;background:white;color:var(--ink);}
+input.isim-inp:focus{outline:none;border-color:var(--accent2);}
+.kavram-kutu{background:linear-gradient(135deg,#1a1a2e,#2d3561);color:white;border-radius:16px;padding:20px;margin-bottom:16px;text-align:center;}
+.kavram-etiket{font-size:10px;text-transform:uppercase;letter-spacing:2px;opacity:0.6;margin-bottom:8px;}
+.kavram-isim{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:10px;}
+.kavram-aciklama{font-size:13px;opacity:0.85;line-height:1.7;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Kamu Ekonomisi Simülasyonu</h1>
+  <span class="sahne-badge" id="sahneBadge">Bekleniyor</span>
+</header>
+<div class="ilerleme"><div class="ilerleme-dolu" id="ilerleme" style="width:0%"></div></div>
+
+<div class="content" id="icerik">
+  <div class="merkez">
+    <div class="buyuk-ikon">⏳</div>
+    <div class="bas">Simülasyon bekleniyor</div>
+    <div class="alt">Öğretmen simülasyonu başlatınca ekran değişecek.</div>
+  </div>
+</div>
+
+<script>
+const FB={apiKey:'AIzaSyDFwRi7C49WQUjZlJEDEZNtg0Q82B1zeyM',projectId:'vergi-dc18f',databaseURL:'https://vergi-dc18f-default-rtdb.firebaseio.com'};
+const SAHNE_ISIMLERI={1:'Sahne 1: Seçmen',2:'Sahne 2: Politikacı',3:'Sahne 3: Bürokrat'};
+const ROL_RENK={secmen:'#c84b31',politikaci:'#2d6a4f',burokrat:'#457b9d'};
+
+let db,simRef,oyRef;
+let isim='';
+let benimRolum=null;
+let mevcutDurum=null;
+let gonderildi=false;
+let rolTalep=false;
+
+window.onload=()=>{
+  try{const app=firebase.initializeApp(FB,'sim-ogrenci');db=firebase.database(app);}
+  catch(e){db=firebase.database(firebase.app('sim-ogrenci'));}
+  simRef=db.ref('simulation');
+  oyRef=db.ref('sim_votes');
+  simRef.on('value',snap=>{
+    const d=snap.val();
+    if(!d||!d.active){gosterBekle();return;}
+    mevcutDurum=d;
+    guncelle(d);
+  });
+};
+
+function guncelle(d){
+  document.getElementById('sahneBadge').textContent=SAHNE_ISIMLERI[d.sahne]||'Sahne';
+  document.getElementById('ilerleme').style.width=(d.sahne/3*100)+'%';
+  if(!isim){gosterIsimAl(d);return;}
+  if(d.asama==='rol_dagitim') gosterRolDagitim(d);
+  else if(d.asama==='hazirlik') gosterHazirlik(d);
+  else if(d.asama==='sahne') gosterSahne(d);
+  else if(d.asama==='oylama') gosterOylama(d);
+  else if(d.asama==='kavram') gosterKavram(d);
+  else if(d.asama==='bitis') gosterBitis();
+}
+
+function gosterBekle(){
+  document.getElementById('sahneBadge').textContent='Bekleniyor';
+  document.getElementById('icerik').innerHTML=`<div class="merkez"><div class="buyuk-ikon">⏳</div><div class="bas">Simülasyon bekleniyor</div><div class="alt">Öğretmen simülasyonu başlatınca ekran değişecek.</div></div>`;
+}
+
+function gosterIsimAl(d){
+  document.getElementById('icerik').innerHTML=`
+    <div class="sahne-bilgi">
+      <div class="sahne-no">Simülasyon Başlıyor</div>
+      <div class="sahne-baslik">Kamu Ekonomisinde Siyasi Süreç</div>
+      <div class="sahne-alt">3 sahne oynayacağız. Her sahnede farklı bir aktörün gözünden bakacaksın.</div>
+    </div>
+    <div class="isim-alani">
+      <label class="isim-label">Adın Soyadın</label>
+      <input class="isim-inp" id="isimInp" placeholder="Ali Yılmaz" maxlength="50"/>
+    </div>
+    <button class="btn-gonder" onclick="isimKaydet()">Katıl</button>`;
+}
+
+function isimKaydet(){
+  const v=document.getElementById('isimInp')?.value?.trim();
+  if(!v){document.getElementById('isimInp')?.focus();return;}
+  isim=v;
+  if(mevcutDurum) guncelle(mevcutDurum);
+}
+
+function gosterRolDagitim(d){
+  gonderildi=false;
+  const sahneInfo=getSahneInfo(d.sahne);
+  const benimRol=d.roller&&d.roller[isim];
+  if(benimRol){
+    benimRolum=benimRol;
+    document.getElementById('icerik').innerHTML=`
+      <div class="rol-kart" style="background:${ROL_RENK[benimRol.tip]||'#1a1a2e'}">
+        <div class="rol-tip">Senin Rolün</div>
+        <div class="rol-isim">${esc(benimRol.isim)}</div>
+        <div class="rol-aciklama">${esc(benimRol.aciklama)}</div>
+      </div>
+      <div class="gorev-kutu">
+        <div class="gorev-baslik">Görevin</div>
+        <div class="gorev-text">${esc(benimRol.gorev)}</div>
+      </div>
+      <div class="onay-ekran">
+        <div class="onay-ikon">🎭</div>
+        <div class="onay-bas">Rolün belirlendi!</div>
+        <div class="onay-alt">Öğretmen sahneyi başlatınca görevin ekranda görünecek.</div>
+      </div>`;
+    return;
+  }
+  if(rolTalep){
+    document.getElementById('icerik').innerHTML=`
+      <div class="sahne-bilgi">
+        <div class="sahne-no">${SAHNE_ISIMLERI[d.sahne]}</div>
+        <div class="sahne-baslik">${sahneInfo.baslik}</div>
+        <div class="sahne-alt">${sahneInfo.aciklama}</div>
+      </div>
+      <div class="onay-ekran">
+        <div class="onay-ikon">✋</div>
+        <div class="onay-bas">Talebiniz alındı</div>
+        <div class="onay-alt">Kura çekilince rol atanırsa bildirilecek. Atanmazsan seçmen olarak oy kullanacaksın.</div>
+      </div>`;
+    return;
+  }
+  document.getElementById('icerik').innerHTML=`
+    <div class="sahne-bilgi">
+      <div class="sahne-no">${SAHNE_ISIMLERI[d.sahne]}</div>
+      <div class="sahne-baslik">${sahneInfo.baslik}</div>
+      <div class="sahne-alt">${sahneInfo.aciklama}</div>
+    </div>
+    <div class="rol-isteme">
+      <div class="rol-isteme-baslik">Bu sahnede rol almak ister misin?</div>
+      <div class="rol-isteme-alt">Gönüllüler arasından kura çekilecek. Seçilmezsen seçmen olarak oy kullanırsın.</div>
+      <button class="btn-evet" onclick="rolIste()">Evet, rol almak istiyorum</button>
+      <button class="btn-hayir" onclick="rolReddet()">Hayır, seçmen olarak katılacağım</button>
+    </div>`;
+}
+
+function rolIste(){
+  db.ref('sim_rol_talep/'+d2key(isim)).set({isim,ts:Date.now()});
+  rolTalep=true;
+  if(mevcutDurum) gosterRolDagitim(mevcutDurum);
+}
+function rolReddet(){
+  rolTalep=true;
+  benimRolum=null;
+  if(mevcutDurum) gosterRolDagitim(mevcutDurum);
+}
+
+function gosterHazirlik(d){
+  if(benimRolum){
+    document.getElementById('icerik').innerHTML=`
+      <div class="rol-kart" style="background:${ROL_RENK[benimRolum.tip]||'#1a1a2e'}">
+        <div class="rol-tip">Senin Rolün — Hazırlan</div>
+        <div class="rol-isim">${esc(benimRolum.isim)}</div>
+        <div class="rol-aciklama">${esc(benimRolum.aciklama)}</div>
+      </div>
+      <div class="gorev-kutu">
+        <div class="gorev-baslik">Görevin</div>
+        <div class="gorev-text">${esc(benimRolum.gorev)}</div>
+      </div>
+      <div class="izleyici-bilgi">Öğretmen sahneyi başlatacak. Hazır ol.</div>`;
+  } else {
+    const sahneInfo=getSahneInfo(d.sahne);
+    document.getElementById('icerik').innerHTML=`
+      <div class="sahne-bilgi">
+        <div class="sahne-no">${SAHNE_ISIMLERI[d.sahne]}</div>
+        <div class="sahne-baslik">${sahneInfo.baslik}</div>
+        <div class="sahne-alt">${sahneInfo.aciklama}</div>
+      </div>
+      <div class="izleyici-bilgi">Sen bu sahnede <strong>seçmen</strong> rolündesin.<br>Sahne başlayınca oy kullanabileceksin.</div>`;
+  }
+}
+
+function gosterSahne(d){
+  gonderildi=false;
+  const sahneInfo=getSahneInfo(d.sahne);
+  if(benimRolum){
+    document.getElementById('icerik').innerHTML=`
+      <div class="rol-kart" style="background:${ROL_RENK[benimRolum.tip]||'#1a1a2e'}">
+        <div class="rol-tip">Aktif Rol</div>
+        <div class="rol-isim">${esc(benimRolum.isim)}</div>
+      </div>
+      <div class="gorev-kutu">
+        <div class="gorev-baslik">Şu an ne yapmalısın?</div>
+        <div class="gorev-text">${esc(benimRolum.sahne_gorevi||benimRolum.gorev)}</div>
+      </div>
+      <div class="izleyici-bilgi">Öğretmen sana söz verecek. Hazır ol.</div>`;
+  } else {
+    document.getElementById('icerik').innerHTML=`
+      <div class="sahne-bilgi">
+        <div class="sahne-no">${SAHNE_ISIMLERI[d.sahne]} — Canlı</div>
+        <div class="sahne-baslik">${sahneInfo.baslik}</div>
+        <div class="sahne-alt">${sahneInfo.izleyici_bilgi||'Sahneyi izle. Oylama kısmında görüşünü bildirirsin.'}</div>
+      </div>
+      <div class="izleyici-bilgi">Sahne devam ediyor...<br>Oylama başlayınca burada görünecek.</div>`;
+  }
+}
+
+function gosterOylama(d){
+  if(gonderildi){
+    document.getElementById('icerik').innerHTML=`<div class="onay-ekran"><div class="onay-ikon">✅</div><div class="onay-bas">Oyunuz alındı</div><div class="onay-alt">Sonuçlar ekranda gösteriliyor.</div></div>`;
+    return;
+  }
+  const soru=d.oylama_soru||'Bu kararı doğru buldunuz mu?';
+  const secenekler=d.oylama_secenekler||['Evet, doğru karar','Hayır, yanlış karar','Kararsızım'];
+  const harfler=['A','B','C','D'];
+  let seciliIdx=null;
+  document.getElementById('icerik').innerHTML=`
+    <div class="sahne-bilgi">
+      <div class="sahne-no">Oylama Zamanı</div>
+      <div class="sahne-baslik">${esc(soru)}</div>
+    </div>
+    <div class="oy-secenekler" id="oySecenekler">
+      ${secenekler.map((s,i)=>`
+        <button class="oy-btn" onclick="oyaSec(${i},this)">
+          <span class="oy-harf">${harfler[i]}</span>
+          <span>${esc(s)}</span>
+        </button>`).join('')}
+    </div>
+    <button class="btn-gonder" id="oyGonderBtn" onclick="oyGonder()" disabled>Oyumu Gönder</button>`;
+
+  window.oyaSec=function(i,el){
+    seciliIdx=i;
+    document.querySelectorAll('.oy-btn').forEach(b=>b.classList.remove('secili'));
+    el.classList.add('secili');
+    document.getElementById('oyGonderBtn').disabled=false;
+  };
+  window.oyGonder=function(){
+    if(seciliIdx===null) return;
+    const btn=document.getElementById('oyGonderBtn');
+    btn.disabled=true;btn.textContent='Gönderiliyor...';
+    oyRef.push({isim,oy:seciliIdx,sahne:d.sahne,oturumId:d.oturumId||'x',ts:Date.now()});
+    gonderildi=true;
+    document.getElementById('icerik').innerHTML=`<div class="onay-ekran"><div class="onay-ikon">✅</div><div class="onay-bas">Oyunuz alındı</div><div class="onay-alt">Sonuçlar ekranda gösteriliyor.</div></div>`;
+  };
+}
+
+function gosterKavram(d){
+  const kavram=d.kavram||{isim:'Kavram',aciklama:'Bu sahneden çıkan temel fikir.'};
+  document.getElementById('icerik').innerHTML=`
+    <div class="kavram-kutu">
+      <div class="kavram-etiket">Bu Sahneden Kavram</div>
+      <div class="kavram-isim">${esc(kavram.isim)}</div>
+      <div class="kavram-aciklama">${esc(kavram.aciklama)}</div>
+    </div>
+    <div class="izleyici-bilgi">Öğretmen bir sonraki sahneye geçince ekran değişecek.</div>`;
+}
+
+function gosterBitis(){
+  document.getElementById('sahneBadge').textContent='Bitti';
+  document.getElementById('ilerleme').style.width='100%';
+  document.getElementById('icerik').innerHTML=`
+    <div class="merkez">
+      <div class="buyuk-ikon">🎓</div>
+      <div class="bas">Simülasyon tamamlandı</div>
+      <div class="alt">Üç aktörü de deneyimledin.<br>Seçmen, politikacı, bürokrat — hepsi kendi sisteminde rasyonel davrandı.<br><br>Peki sistem neden yine de aksaklık üretiyor?</div>
+    </div>`;
+}
+
+function getSahneInfo(sahne){
+  const bilgi={
+    1:{baslik:'Seçmen Sahnesi',aciklama:'İki aday var. 30 saniyede oy kullanacaksın.',izleyici_bilgi:'Adayları dinle. Kararını ver.'},
+    2:{baslik:'Politikacı Sahnesi',aciklama:'Seçilmiş temsilciler bütçe kararı alıyor.',izleyici_bilgi:'Kararları izle. Oylama kısmında değerlendir.'},
+    3:{baslik:'Bürokrat Sahnesi',aciklama:'Bakanlıklar bütçe kısıntısında masaya oturuyor.',izleyici_bilgi:'Kim kendi bütçesinden kesiyor? İzle ve değerlendir.'}
+  };
+  return bilgi[sahne]||{baslik:'Sahne',aciklama:'',izleyici_bilgi:''};
+}
+
+function d2key(s){return s.replace(/[^a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]/g,'_').substring(0,30)+'_'+Date.now()%10000;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>

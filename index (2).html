@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Öğretmen Paneli — Kamu Ekonomisi: Siyasi Süreç</title>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{--ink:#1a1a2e;--paper:#f5f0e8;--accent:#c84b31;--accent2:#2d6a4f;--accent3:#457b9d;--muted:#8a8070;--surface:#ede8de;--border:#d4cfc4;}
+  body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;overflow:hidden;}
+  header{background:var(--ink);color:var(--paper);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  header h1{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;}
+  .live-b{display:flex;align-items:center;gap:6px;font-size:12px;opacity:0.7;}
+  .dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 1.5s infinite;}
+  .dot.off{background:#888;animation:none;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+  .layout{display:grid;grid-template-columns:320px 1fr 260px;height:calc(100vh - 48px);}
+
+  /* SOL: Soru seti editörü */
+  .sol{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--surface);}
+  .sol-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .sol-baslik{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+  .btn-yeni-soru{padding:6px 12px;border-radius:7px;background:var(--accent2);color:white;border:none;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;cursor:pointer;}
+  .soru-listesi{flex:1;overflow-y:auto;padding:10px;}
+  .soru-kart-mini{background:white;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:7px;cursor:pointer;transition:all 0.15s;position:relative;}
+  .soru-kart-mini:hover{border-color:var(--accent2);}
+  .soru-kart-mini.aktif{border-color:var(--accent2);background:#e8f5e9;}
+  .soru-kart-mini.gonderildi{border-color:var(--accent3);background:#e8f4f8;}
+  .skm-ust{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .skm-no{font-size:11px;font-weight:700;color:var(--muted);}
+  .skm-tip{font-size:10px;background:var(--surface);border-radius:4px;padding:2px 6px;color:var(--muted);}
+  .skm-tip.aktif-tip{background:#d4edda;color:#155724;}
+  .skm-soru{font-size:12px;color:var(--ink);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .skm-sil{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;opacity:0;transition:opacity 0.15s;}
+  .soru-kart-mini:hover .skm-sil{opacity:1;}
+  .sol-footer{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;}
+  .btn-basla-set{flex:1;padding:11px;border-radius:9px;background:var(--accent);color:white;border:none;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+  .btn-basla-set:hover{background:#a83825;}
+  .btn-basla-set:disabled{background:var(--muted);cursor:default;}
+
+  /* ORTA: Aktif soru görselleştirme */
+  .orta{display:flex;flex-direction:column;overflow:hidden;}
+  .orta-header{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .soru-nav{display:flex;align-items:center;gap:10px;}
+  .btn-nav{padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:white;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;transition:all 0.15s;}
+  .btn-nav:hover{background:var(--surface);}
+  .btn-nav.ileri{background:var(--accent2);color:white;border-color:var(--accent2);}
+  .btn-nav.ileri:hover{background:#1e5438;}
+  .btn-nav:disabled{opacity:0.3;cursor:default;}
+  .soru-ilerleme{font-size:13px;color:var(--muted);}
+  .nav-aksiyonlar{display:flex;gap:8px;}
+  .btn-kucuk{padding:7px 12px;border-radius:7px;border:1px solid var(--border);background:white;cursor:pointer;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;transition:all 0.15s;}
+  .btn-kucuk:hover{background:var(--surface);}
+  .btn-kucuk.analiz{background:linear-gradient(135deg,#2d6a4f,#457b9d);color:white;border:none;}
+  .btn-kucuk:disabled{opacity:0.35;cursor:default;}
+
+  .orta-icerik{flex:1;overflow-y:auto;padding:20px 22px;display:flex;flex-direction:column;gap:14px;}
+  .aktif-soru-goster{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;border-left:4px solid var(--accent);padding-left:14px;line-height:1.3;}
+  .aktif-tip-badge{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:4px;}
+  .stats-row{display:flex;gap:10px;}
+  .stat{background:white;border:1px solid var(--border);border-radius:9px;padding:10px 14px;flex:1;text-align:center;}
+  .stat-n{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;}
+  .stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px;}
+  .gorsel-kutu{background:white;border:1px solid var(--border);border-radius:12px;padding:18px;min-height:180px;}
+  .gorsel-baslik{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600;margin-bottom:12px;}
+  .bulut-alan{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:7px;min-height:140px;}
+  .bulut-k{border-radius:5px;padding:3px 9px;animation:wIn 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+  @keyframes wIn{from{opacity:0;transform:scale(0.3)}to{opacity:1;transform:scale(1)}}
+  .yoklama-bars{display:flex;flex-direction:column;gap:8px;}
+  .yb-row{display:flex;align-items:center;gap:8px;}
+  .yb-label{font-size:12px;flex:0 0 160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .yb-wrap{flex:1;background:var(--surface);border-radius:5px;height:26px;overflow:hidden;}
+  .yb-fill{height:100%;border-radius:5px;transition:width 0.5s;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:600;color:white;}
+  .yb-n{font-size:12px;font-weight:600;flex:0 0 28px;text-align:right;}
+  .siralama-sonuc{display:flex;flex-direction:column;gap:7px;}
+  .sr-item{background:var(--surface);border-radius:7px;padding:9px 12px;display:flex;align-items:center;gap:8px;}
+  .sr-puan{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--accent2);flex:0 0 44px;}
+  .sr-text{font-size:12px;flex:1;}
+  .sr-bar{height:5px;border-radius:3px;background:var(--accent2);margin-top:3px;transition:width 0.5s;}
+
+  /* Analiz paneli */
+  .analiz-panel{background:white;border:1px solid var(--border);border-radius:12px;padding:18px;display:none;}
+  .analiz-panel.visible{display:block;}
+  .ap-bolum{margin-bottom:16px;}
+  .ap-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:8px;}
+  .ton-bar{display:flex;height:28px;border-radius:7px;overflow:hidden;}
+  .ton-s{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:white;transition:width 0.8s;overflow:hidden;}
+  .radar-wrap{max-width:260px;margin:0 auto;}
+  .cerceve-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+  .ck{border-radius:7px;padding:10px;border:1px solid var(--border);}
+  .ck.eko{background:#e8f4f8;border-color:#457b9d;} .ck.huk{background:#fff3e0;border-color:#e9c46a;} .ck.gun{background:#e8f5e9;border-color:#2d6a4f;}
+  .ck .cb{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+  .ck.eko .cb{color:#457b9d;} .ck.huk .cb{color:#b5830a;} .ck.gun .cb{color:#2d6a4f;}
+  .ck .cn{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;}
+  .ck.eko .cn{color:#457b9d;} .ck.huk .cn{color:#b5830a;} .ck.gun .cn{color:#2d6a4f;}
+  .ck .co{font-size:10px;color:var(--muted);font-style:italic;margin-top:5px;border-top:1px solid rgba(0,0,0,0.08);padding-top:5px;line-height:1.4;}
+  .ped-kutu{background:linear-gradient(135deg,#e8f4f0,#e3edf5);border:1px solid #b8d4c8;border-radius:9px;padding:14px;font-size:12px;line-height:1.7;}
+  .yanlis-item{background:#fff5f5;border:1px solid #ffcccc;border-radius:6px;padding:8px 10px;font-size:11px;margin-bottom:5px;line-height:1.5;}
+  .yanlis-item strong{color:var(--accent);}
+
+  /* Genel rapor */
+  .rapor-panel{background:white;border:1px solid var(--border);border-radius:12px;padding:18px;display:none;}
+  .rapor-panel.visible{display:block;}
+  .rapor-soru-item{border-bottom:1px solid var(--border);padding:10px 0;}
+  .rapor-soru-item:last-child{border-bottom:none;}
+  .rsi-soru{font-size:12px;font-weight:600;margin-bottom:4px;}
+  .rsi-ozet{font-size:11px;color:var(--muted);line-height:1.5;}
+
+  /* SAĞ: Sidebar */
+  .sag{border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--surface);}
+  .sb-bolum{padding:12px 14px;border-bottom:1px solid var(--border);}
+  .sb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600;margin-bottom:8px;}
+  #qrCanvas{display:flex;justify-content:center;margin:5px 0;}
+  .join-url{font-size:10px;color:var(--muted);text-align:center;word-break:break-all;line-height:1.5;}
+  .resp-list{flex:1;overflow-y:auto;padding:8px 12px;}
+  .resp-item{font-size:11px;padding:6px 7px;border-bottom:1px solid var(--border);line-height:1.4;}
+  .resp-name{font-weight:600;color:var(--accent2);}
+  .resp-text{color:var(--ink);margin-top:1px;font-size:10px;}
+
+  /* Soru editörü modal */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;}
+  .modal-overlay.acik{display:flex;}
+  .modal{background:white;border-radius:16px;padding:24px;width:480px;max-height:80vh;overflow-y:auto;}
+  .modal-baslik{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;}
+  .modal-kapat{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);}
+  .m-label{font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;}
+  .m-input{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);resize:none;margin-bottom:12px;}
+  .m-input:focus{outline:none;border-color:var(--accent2);}
+  .tip-grid-m{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px;}
+  .tip-btn-m{padding:9px 5px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;text-align:center;font-size:11px;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .tip-btn-m:hover{border-color:var(--accent2);}
+  .tip-btn-m.aktif{border-color:var(--accent2);background:#e8f5e9;}
+  .tip-emoji-m{font-size:18px;display:block;margin-bottom:3px;}
+  .secenek-row{display:flex;gap:6px;margin-bottom:6px;}
+  .secenek-inp{flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;background:white;color:var(--ink);}
+  .secenek-inp:focus{outline:none;border-color:var(--accent);}
+  .secenek-sil-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;}
+  .btn-secenek-ekle-m{background:none;border:1px dashed var(--border);border-radius:7px;padding:7px;font-size:12px;color:var(--muted);cursor:pointer;width:100%;margin-bottom:12px;}
+  .btn-secenek-ekle-m:hover{border-color:var(--accent2);color:var(--accent2);}
+  .modal-footer{display:flex;gap:8px;margin-top:4px;}
+  .btn-modal-kaydet{flex:1;padding:11px;border-radius:9px;background:var(--accent2);color:white;border:none;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+  .btn-modal-iptal{padding:11px 16px;border-radius:9px;border:1px solid var(--border);background:white;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;}
+
+  .bos-ekran{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--muted);text-align:center;padding:40px;}
+  .bos-ekran-ikon{font-size:40px;margin-bottom:12px;}
+  .bos-ekran-text{font-size:14px;line-height:1.6;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Öğretmen Paneli — Kamu Ekonomisi: Siyasi Süreç</h1>
+  <div class="live-b"><div class="dot off" id="liveDot"></div><span id="liveStatus">Bekleniyor</span></div>
+</header>
+
+<div class="layout">
+  <!-- SOL: Soru seti -->
+  <div class="sol">
+    <div class="sol-header">
+      <div class="sol-baslik">Soru Seti <span id="soruSayac" style="color:var(--accent2)">(0)</span></div>
+      <button class="btn-yeni-soru" onclick="yeniSoruModal()">+ Soru Ekle</button>
+    </div>
+    <div class="soru-listesi" id="soruListesi">
+      <div style="text-align:center;padding:30px 16px;color:var(--muted);font-size:13px;">Henüz soru eklenmedi.<br>+ Soru Ekle butonuna tıklayın.</div>
+    </div>
+    <div class="sol-footer">
+      <button class="btn-basla-set" id="btnBasla" onclick="oturumBaslat()" disabled>▶ Oturumu Başlat</button>
+    </div>
+  </div>
+
+  <!-- ORTA: Görselleştirme -->
+  <div class="orta">
+    <div class="orta-header" id="ortaHeader" style="display:none">
+      <div class="soru-nav">
+        <button class="btn-nav" id="btnGeri" onclick="soruDegistir(-1)" disabled>← Geri</button>
+        <span class="soru-ilerleme" id="soruIlerleme">1 / 1</span>
+        <button class="btn-nav ileri" id="btnIleri" onclick="soruDegistir(1)">İleri →</button>
+      </div>
+      <div class="nav-aksiyonlar">
+        <button class="btn-kucuk analiz" id="btnAnaliz" onclick="analizYap()" disabled>🔍 Analiz</button>
+        <button class="btn-kucuk" id="btnRapor" onclick="genelRapor()" disabled>📊 Rapor</button>
+        <button class="btn-kucuk" id="btnCsv" onclick="csvIndir()" disabled>⬇ CSV</button>
+        <button class="btn-kucuk" style="color:var(--accent)" onclick="oturumDurdur()">■ Durdur</button>
+      </div>
+    </div>
+    <div class="orta-icerik" id="ortaIcerik">
+      <div class="bos-ekran">
+        <div class="bos-ekran-ikon">📋</div>
+        <div class="bos-ekran-text">Sol taraftan sorularınızı ekleyin,<br>ardından oturumu başlatın.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAĞ: Sidebar -->
+  <div class="sag">
+    <div class="sb-bolum">
+      <div class="sb-label">Öğrenci Bağlantısı</div>
+      <div id="qrCanvas"></div>
+      <div class="join-url" id="joinUrl"></div>
+    </div>
+    <div class="sb-label" style="padding:10px 14px 4px">Son Yanıtlar</div>
+    <div class="resp-list" id="respList"></div>
+  </div>
+</div>
+
+<!-- SORU EKLEME MODALI -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-baslik">
+      <span id="modalBaslikText">Yeni Soru</span>
+      <button class="modal-kapat" onclick="modalKapat()">✕</button>
+    </div>
+    <div class="m-label">Soru Türü</div>
+    <div class="tip-grid-m">
+      <button class="tip-btn-m aktif" onclick="mTipSec('tanim',this)"><span class="tip-emoji-m">✍️</span>Tanım Yaz</button>
+      <button class="tip-btn-m" onclick="mTipSec('yoklama',this)"><span class="tip-emoji-m">🙋</span>Anlama Kontrolü</button>
+      <button class="tip-btn-m" onclick="mTipSec('secmeli',this)"><span class="tip-emoji-m">🔤</span>Çoktan Seçmeli</button>
+      <button class="tip-btn-m" onclick="mTipSec('siralama',this)"><span class="tip-emoji-m">↕️</span>Sıralama</button>
+      <button class="tip-btn-m" onclick="mTipSec('cagrisim',this)"><span class="tip-emoji-m">💭</span>Kelime Çağrışımı</button>
+      <button class="tip-btn-m" onclick="mTipSec('yansima',this)"><span class="tip-emoji-m">🪞</span>Ders Sonu Yansıma</button>
+    </div>
+    <div class="m-label">Soru Metni</div>
+    <textarea class="m-input" id="mSoruText" rows="3" placeholder="Soruyu yazın..."></textarea>
+    <div id="mSeceneklerAlan" style="display:none">
+      <div class="m-label">Seçenekler</div>
+      <div id="mSeceneklerListe"></div>
+      <button class="btn-secenek-ekle-m" onclick="mSecenekEkle()">+ Seçenek ekle</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-iptal" onclick="modalKapat()">İptal</button>
+      <button class="btn-modal-kaydet" onclick="soruKaydet()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const FB={apiKey:'AIzaSyDFwRi7C49WQUjZlJEDEZNtg0Q82B1zeyM',projectId:'vergi-dc18f',databaseURL:'https://vergi-dc18f-default-rtdb.firebaseio.com'};
+const STUDENT_URL='https://benevolent-sawine-b2cac2.netlify.app/ogrenci%20(4).html';
+
+let db,sessionRef,responsesRef;
+let sorular=[];
+let aktifSoruIdx=0;
+let tumYanitlar=[];
+let radarObj=null;
+let mTip='tanim';
+let mSecenekler=[];
+let duzenleIdx=-1;
+let oturumBasladi=false;
+
+const TIP_LABEL={tanim:'Tanım Yaz',yoklama:'Anlama Kontrolü',secmeli:'Çoktan Seçmeli',siralama:'Sıralama',cagrisim:'Kelime Çağrışımı',yansima:'Ders Sonu Yansıma'};
+const COLORS=[{bg:'#c84b31',c:'#fff'},{bg:'#2d6a4f',c:'#fff'},{bg:'#457b9d',c:'#fff'},{bg:'#e9c46a',c:'#1a1a2e'},{bg:'#264653',c:'#fff'},{bg:'#e76f51',c:'#fff'},{bg:'#2a9d8f',c:'#fff'},{bg:'#f4a261',c:'#1a1a2e'},{bg:'#6d6875',c:'#fff'},{bg:'#b5838d',c:'#fff'}];
+const BAR_COLORS=['#c84b31','#2d6a4f','#457b9d','#e9a227','#6d6875','#2a9d8f'];
+const STOP=new Set(['ve','bir','bu','da','de','ile','için','ama','çok','daha','ne','gibi','kadar','sonra','önce','her','hiç','ki','mi','mu','mü','mı','ise','ya','hem','veya','sadece','bile','yani','ancak','fakat','oysa','eğer','çünkü','nasıl','neden','zaman','olarak','olduğu','olan','tarafından','devlet','vergi']);
+
+window.onload=()=>{
+  try{const app=firebase.initializeApp(FB,'ogretmen-app');db=firebase.database(app);}
+  catch(e){if(e.code==='app/duplicate-app')db=firebase.database(firebase.app('ogretmen-app'));}
+  sessionRef=db.ref('session');
+  responsesRef=db.ref('responses');
+  new QRCode(document.getElementById('qrCanvas'),{text:STUDENT_URL,width:170,height:170,colorDark:'#1a1a2e',colorLight:'#f5f0e8'});
+  document.getElementById('joinUrl').textContent=STUDENT_URL;
+  // Varsayılan 5 soru yükle
+  varsayilanSorular();
+};
+
+function varsayilanSorular(){
+  sorular=[
+
+    // --- AÇILIŞ: Öğrenciyi içine çek ---
+    {
+      soru: 'Bu ay KYK bursundan / kredisinden kaç TL aldın? (Almıyorsan 0 yaz)',
+      tip: 'tanim'
+    },
+
+    // --- SORU 2: Kim karar verdi? ---
+    {
+      soru: 'Sence o rakamı kim belirledi?',
+      tip: 'secmeli',
+      secenekler: [
+        'YÖK (Yükseköğretim Kurulu)',
+        'Üniversite yönetimi',
+        'Bakanlar Kurulu / Cumhurbaşkanlığı kararnamesi',
+        'Bilmiyorum'
+      ]
+    },
+
+    // --- SORU 3: Normatif beklenti — dersin sonunda tekrar açılacak ---
+    {
+      soru: 'Sence iyi bir politikacı karar alırken neye öncelik vermeli?',
+      tip: 'secmeli',
+      secenekler: [
+        'Seçmenin kısa vadeli taleplerini karşılamak',
+        'Ülkenin uzun vadeli çıkarını gözetmek',
+        'Parti programını uygulamak',
+        'Uzman görüşlerine uymak'
+      ]
+    },
+
+    // --- SORU 4: Siyasi süreç sezgisi ---
+    {
+      soru: '"Devlet kararı" denince aklına ilk gelen 3 kelimeyi yaz',
+      tip: 'cagrisim'
+    },
+
+    // --- SORU 5: Seçim-bütçe bağlantısı ---
+    {
+      soru: 'Seçim yıllarında KYK miktarı artar mı?',
+      tip: 'secmeli',
+      secenekler: [
+        'Evet, seçim öncesi mutlaka artar',
+        'Hayır, siyasetle ilgisi yok',
+        'Bazen artar, tesadüf değil',
+        'Hiç düşünmemiştim'
+      ]
+    },
+
+    // --- SORU 6: Aktörler — politikacının güdüsü ---
+    {
+      soru: 'Bir politikacı 4 yıl sonra seçilmek istiyorsa, hangi kararı alır?',
+      tip: 'secmeli',
+      secenekler: [
+        '10 yıl sonra faydalı ama şimdi maliyetli olan kararı',
+        'Hemen fark edilecek, popüler kararı',
+        'Uzmanların önerdiği teknik kararı',
+        'Her iki kararı da dengeler'
+      ]
+    },
+
+    // --- SORU 7: Bürokrat güdüsü ---
+    {
+      soru: 'Bir bakanlık, bütçesi kısılacağını öğrenirse ne yapar?',
+      tip: 'secmeli',
+      secenekler: [
+        'Verimlilik için kendi bütçesini gönüllü kısar',
+        'Diğer bakanlıkların kısılmasını savunur',
+        'Bütçesini savunmak için lobi yapar',
+        'Durumu kamuoyuyla paylaşır'
+      ]
+    },
+
+    // --- SORU 8: Seçmenin rolü — kritik bağlantı ---
+    {
+      soru: 'Sen hiç oy kullandın mı ya da kullanmayı düşünüyor musun?',
+      tip: 'yoklama',
+      secenekler: [
+        {emoji:'✅', metin:'Evet, kullandım / kullanacağım'},
+        {emoji:'🤔', metin:'Düşünüyorum ama kararsızım'},
+        {emoji:'❌', metin:'Hayır, gerek görmüyorum'}
+      ]
+    },
+
+    // --- SORU 9: Bağlantıyı kur ---
+    {
+      soru: 'KYK miktarı ile oy kullanmak arasında bir bağlantı var mı?',
+      tip: 'tanim'
+    },
+
+    // --- SORU 10: Ders sonu yansıma — normatif soruya dönüş ---
+    {
+      soru: 'Dersin başında "iyi politikacı uzun vadeyi gözetmeli" dedin. Peki neden politikacılar çoğunlukla kısa vadeyi seçiyor? Bir cümleyle açıkla.',
+      tip: 'yansima'
+    },
+
+  ];
+  renderSoruListesi();
+}
+
+function renderSoruListesi(){
+  const liste=document.getElementById('soruListesi');
+  document.getElementById('soruSayac').textContent='('+sorular.length+')';
+  document.getElementById('btnBasla').disabled=sorular.length===0;
+  if(!sorular.length){liste.innerHTML='<div style="text-align:center;padding:30px 16px;color:var(--muted);font-size:13px;">Henüz soru eklenmedi.<br>+ Soru Ekle butonuna tıklayın.</div>';return;}
+  liste.innerHTML=sorular.map((s,i)=>`
+    <div class="soru-kart-mini ${oturumBasladi&&i===aktifSoruIdx?'aktif':''} ${oturumBasladi&&i<aktifSoruIdx?'gonderildi':''}" onclick="${oturumBasladi?'soruSec('+i+')':''}">
+      <div class="skm-ust">
+        <span class="skm-no">Soru ${i+1}</span>
+        <span class="skm-tip ${oturumBasladi&&i===aktifSoruIdx?'aktif-tip':''}">${TIP_LABEL[s.tip]||s.tip}</span>
+        ${!oturumBasladi?`<button class="skm-sil" onclick="event.stopPropagation();soruSil(${i})">✕</button>`:''}
+      </div>
+      <div class="skm-soru">${escHtml(s.soru)}</div>
+    </div>`).join('');
+}
+
+// MODAL
+function yeniSoruModal(idx=-1){
+  duzenleIdx=idx;
+  mTip=idx>=0?sorular[idx].tip:'tanim';
+  mSecenekler=idx>=0?(sorular[idx].secenekler||sorular[idx].siralama_ogeleri||[]).map(s=>typeof s==='object'?s.emoji+' '+s.metin:s):[];
+  document.getElementById('modalBaslikText').textContent=idx>=0?'Soruyu Düzenle':'Yeni Soru';
+  document.getElementById('mSoruText').value=idx>=0?sorular[idx].soru:'';
+  document.querySelectorAll('.tip-btn-m').forEach(b=>b.classList.remove('aktif'));
+  document.querySelectorAll('.tip-btn-m').forEach(b=>{if(b.textContent.includes(TIP_LABEL[mTip]?.slice(0,5)))b.classList.add('aktif');});
+  mSeceneklerRender();
+  mSecenekAlanGuncelle();
+  document.getElementById('modalOverlay').classList.add('acik');
+}
+function modalKapat(){document.getElementById('modalOverlay').classList.remove('acik');}
+function mTipSec(tip,el){
+  mTip=tip;
+  document.querySelectorAll('.tip-btn-m').forEach(b=>b.classList.remove('aktif'));
+  el.classList.add('aktif');
+  const varsayilanSecenekler={
+    yoklama:['😊 Anladım, açıklayabilirim','🤔 Kısmen anladım','😕 Anlamadım'],
+    secmeli:['Seçenek A','Seçenek B','Seçenek C','Seçenek D'],
+    siralama:['Madde 1','Madde 2','Madde 3','Madde 4']
+  };
+  if(mSecenekler.length===0&&varsayilanSecenekler[tip]) mSecenekler=[...varsayilanSecenekler[tip]];
+  mSeceneklerRender();
+  mSecenekAlanGuncelle();
+}
+function mSecenekAlanGuncelle(){
+  document.getElementById('mSeceneklerAlan').style.display=['yoklama','secmeli','siralama'].includes(mTip)?'block':'none';
+}
+function mSeceneklerRender(){
+  document.getElementById('mSeceneklerListe').innerHTML=mSecenekler.map((s,i)=>`
+    <div class="secenek-row">
+      <input class="secenek-inp" value="${escHtml(s)}" onchange="mSecenekler[${i}]=this.value"/>
+      <button class="secenek-sil-btn" onclick="mSecenekSil(${i})">✕</button>
+    </div>`).join('');
+}
+function mSecenekEkle(){mSecenekler.push('Yeni seçenek');mSeceneklerRender();}
+function mSecenekSil(i){mSecenekler.splice(i,1);mSeceneklerRender();}
+function soruKaydet(){
+  const soru=document.getElementById('mSoruText').value.trim();
+  if(!soru){alert('Soru metni yazın.');return;}
+  const obj={soru,tip:mTip};
+  if(mTip==='yoklama'){obj.secenekler=mSecenekler.map(s=>{const p=s.split(' ');return{emoji:p[0],metin:p.slice(1).join(' ')};});}
+  else if(mTip==='secmeli'){obj.secenekler=[...mSecenekler];}
+  else if(mTip==='siralama'){obj.siralama_ogeleri=[...mSecenekler];}
+  if(duzenleIdx>=0)sorular[duzenleIdx]=obj;else sorular.push(obj);
+  renderSoruListesi();
+  modalKapat();
+}
+function soruSil(i){if(confirm('Bu soru silinsin mi?')){sorular.splice(i,1);renderSoruListesi();}}
+
+// OTURUM
+function oturumBaslat(){
+  if(!sorular.length){alert('En az bir soru ekleyin.');return;}
+  oturumBasladi=true;
+  aktifSoruIdx=0;
+  const oturumId='oturum_'+Date.now();
+  const sessionData={active:true,oturumId,sorular,soruIdx:0,baslik:'Derse Katıl',question:sorular[0].soru,tip:sorular[0].tip};
+  if(sorular[0].secenekler)sessionData.secenekler=sorular[0].secenekler;
+  if(sorular[0].siralama_ogeleri)sessionData.siralama_ogeleri=sorular[0].siralama_ogeleri;
+  sessionRef.set(sessionData);
+  document.getElementById('liveDot').className='dot';
+  document.getElementById('liveStatus').textContent='Canlı';
+  document.getElementById('ortaHeader').style.display='flex';
+  renderSoruListesi();
+  soruGoster(0);
+  responsesRef.on('value',snap=>{
+    tumYanitlar=Object.values(snap.val()||{});
+    renderSoruGorsel();
+    renderList();
+    updateStats();
+    const aktifYanitlar=tumYanitlar.filter(r=>r.soruIdx===aktifSoruIdx);
+    document.getElementById('btnAnaliz').disabled=aktifYanitlar.length<3;
+    document.getElementById('btnCsv').disabled=tumYanitlar.length===0;
+    document.getElementById('btnRapor').disabled=tumYanitlar.length===0;
+  });
+}
+
+function soruSec(i){if(oturumBasladi){aktifSoruIdx=i;soruGoster(i);renderSoruListesi();}}
+function soruDegistir(yon){
+  const yeni=aktifSoruIdx+yon;
+  if(yeni<0||yeni>=sorular.length)return;
+  aktifSoruIdx=yeni;
+  const s=sorular[yeni];
+  const update={soruIdx:yeni,question:s.soru,tip:s.tip};
+  if(s.secenekler)update.secenekler=s.secenekler;
+  if(s.siralama_ogeleri)update.siralama_ogeleri=s.siralama_ogeleri;
+  sessionRef.update(update);
+  soruGoster(yeni);
+  renderSoruListesi();
+}
+function soruGoster(i){
+  aktifSoruIdx=i;
+  document.getElementById('soruIlerleme').textContent=(i+1)+' / '+sorular.length;
+  document.getElementById('btnGeri').disabled=i===0;
+  document.getElementById('btnIleri').disabled=i>=sorular.length-1;
+  renderSoruGorsel();
+}
+function oturumDurdur(){
+  if(sessionRef)sessionRef.update({active:false});
+  document.getElementById('liveDot').className='dot off';
+  document.getElementById('liveStatus').textContent='Durduruldu';
+}
+
+function aktifYanitlar(){return tumYanitlar.filter(r=>r.soruIdx===aktifSoruIdx);}
+function aktifKelimeler(){
+  const w={};
+  aktifYanitlar().forEach(r=>{r.text?.toLowerCase().replace(/[.,!?;:()\[\]"']/g,' ').split(/\s+/).filter(k=>k.length>2&&!STOP.has(k)).forEach(k=>{w[k]=(w[k]||0)+1;});});
+  return w;
+}
+
+function renderSoruGorsel(){
+  const ic=document.getElementById('ortaIcerik');
+  const s=sorular[aktifSoruIdx];
+  if(!s)return;
+  const yanit=aktifYanitlar();
+  // İçeriği yeniden çiz
+  let html=`<div>
+    <div class="aktif-tip-badge">${TIP_LABEL[s.tip]||s.tip}</div>
+    <div class="aktif-soru-goster">${escHtml(s.soru)}</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n" id="sYanit">${yanit.length}</div><div class="stat-l">yanıt</div></div>
+    <div class="stat"><div class="stat-n" id="sUniq">${Object.keys(aktifKelimeler()).length}</div><div class="stat-l">farklı kelime</div></div>
+    <div class="stat"><div class="stat-n" id="sTop">${(()=>{const e=Object.entries(aktifKelimeler()).sort((a,b)=>b[1]-a[1])[0];return e?e[0]:'—';})()}</div><div class="stat-l">en çok</div></div>
+  </div>
+  <div class="gorsel-kutu"><div class="gorsel-baslik" id="gBaslik">Canlı Sonuçlar</div><div id="gIcerik"></div></div>
+  <div class="analiz-panel" id="analizPanel">
+    <div class="ap-bolum"><div class="ap-label">Algı Tonu</div><div class="ton-bar"><div class="ton-s" id="tYuk" style="background:#c84b31;width:0%"></div><div class="ton-s" id="tNotr" style="background:#8a8070;width:0%"></div><div class="ton-s" id="tFayda" style="background:#2d6a4f;width:0%"></div></div><div style="display:flex;gap:12px;margin-top:5px;font-size:10px;color:var(--muted);">🔴 <span id="tYP">0%</span> Yük &nbsp; ⚫ <span id="tNP">0%</span> Nötr &nbsp; 🟢 <span id="tFP">0%</span> Fayda</div></div>
+    <div class="ap-bolum"><div class="ap-label">Algı Pusulası</div><div class="radar-wrap"><canvas id="radarChart" width="260" height="220"></canvas></div></div>
+    <div class="ap-bolum"><div class="ap-label">Kavram Çerçeveleri</div><div class="cerceve-grid"><div class="ck eko"><div class="cb">Ekonomik</div><div class="cn" id="cEko">—</div><div class="co" id="cEkoO">—</div></div><div class="ck huk"><div class="cb">Hukuki</div><div class="cn" id="cHuk">—</div><div class="co" id="cHukO">—</div></div><div class="ck gun"><div class="cb">Günlük</div><div class="cn" id="cGun">—</div><div class="co" id="cGunO">—</div></div></div></div>
+    <div class="ap-bolum" id="yanlisBlok" style="display:none"><div class="ap-label">⚠️ Kavram Yanılgıları</div><div id="yanlisList"></div></div>
+    <div class="ped-kutu"><div style="font-size:10px;font-weight:700;color:#2d6a4f;margin-bottom:5px;">💡 Pedagojik Not</div><div id="pedMetin" style="font-size:12px;line-height:1.7;">—</div></div>
+  </div>
+  <div class="rapor-panel" id="raporPanel"></div>`;
+  ic.innerHTML=html;
+  renderGorselIcerik(s,yanit);
+}
+
+function renderGorselIcerik(s,yanit){
+  const tip=s.tip;
+  const gIc=document.getElementById('gIcerik');
+  const gBas=document.getElementById('gBaslik');
+  if(!gIc)return;
+  if(tip==='tanim'||tip==='cagrisim'||tip==='yansima'){
+    gBas.textContent='Kelime Bulutu';
+    const words=aktifKelimeler();
+    const entries=Object.entries(words).sort((a,b)=>b[1]-a[1]).slice(0,60);
+    if(!entries.length){gIc.innerHTML='<div style="color:var(--muted);text-align:center;padding:30px;font-size:13px;">Yanıtlar bekleniyor...</div>';return;}
+    const max=entries[0][1];
+    gIc.innerHTML='<div class="bulut-alan">'+entries.map(([w,c],i)=>{const size=11+Math.round((c/max)*30);const col=COLORS[i%COLORS.length];return`<span class="bulut-k" style="font-size:${size}px;background:${col.bg};color:${col.c};font-family:'Syne',sans-serif;font-weight:${c>2?'700':'400'}">${w}</span>`}).join('')+'</div>';
+  } else if(tip==='yoklama'||tip==='secmeli'){
+    gBas.textContent='Canlı Sonuçlar';
+    const sayimlar={};yanit.forEach(r=>{sayimlar[r.text]=(sayimlar[r.text]||0)+1;});
+    const labellar=tip==='yoklama'?(s.secenekler||[]).map(o=>o.emoji+' '+o.metin):(s.secenekler||[]);
+    gIc.innerHTML='<div class="yoklama-bars">'+labellar.map((l,i)=>{const sayi=sayimlar[String(i)]||0;const pct=yanit.length?Math.round(sayi/yanit.length*100):0;return`<div class="yb-row"><div class="yb-label">${escHtml(l)}</div><div class="yb-wrap"><div class="yb-fill" style="width:${pct}%;background:${BAR_COLORS[i%BAR_COLORS.length]}">${pct>12?pct+'%':''}</div></div><div class="yb-n">${sayi}</div></div>`;}).join('')+'</div>';
+  } else if(tip==='siralama'){
+    gBas.textContent='Sıralama Sonuçları';
+    if(!yanit.length){gIc.innerHTML='<div style="color:var(--muted);text-align:center;padding:30px;font-size:13px;">Yanıtlar bekleniyor...</div>';return;}
+    const ogeler=s.siralama_ogeleri||[];const puanlar={};ogeler.forEach(o=>{puanlar[o]=0;});
+    yanit.forEach(r=>{r.text.split('||').forEach((item,idx)=>{if(puanlar[item]!==undefined)puanlar[item]+=(ogeler.length-idx);});});
+    const sirali=Object.entries(puanlar).sort((a,b)=>b[1]-a[1]);const maxP=sirali[0]?.[1]||1;
+    gIc.innerHTML='<div class="siralama-sonuc">'+sirali.map(([item,p])=>`<div class="sr-item"><div><div class="sr-text">${escHtml(item)}</div><div class="sr-bar" style="width:${Math.round(p/maxP*100)}%"></div></div><div class="sr-puan">${p}</div></div>`).join('')+'</div>';
+  }
+}
+
+function renderList(){
+  const aktif=aktifYanitlar();
+  document.getElementById('respList').innerHTML=[...aktif].reverse().slice(0,20).map(r=>`<div class="resp-item"><div class="resp-name">${escHtml(r.name)}</div><div class="resp-text">${escHtml(r.text)}</div></div>`).join('');
+}
+function updateStats(){}
+
+// ANALİZ
+async function analizYap(){
+  const yanit=aktifYanitlar();
+  if(yanit.length<3){alert('En az 3 yanıt gerekli.');return;}
+  const btn=document.getElementById('btnAnaliz');
+  btn.disabled=true;btn.innerHTML='<span style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:5px;vertical-align:middle"></span>Analiz...';
+  const tanimlar=yanit.map((r,i)=>`${i+1}. ${r.name}: "${r.text}"`).join('\n');
+  const soru=sorular[aktifSoruIdx]?.soru||'';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:`Bu bir kamu ekonomisi/maliye giriş dersi. Ders konusu: siyasi süreçte karar alma, aktörler (seçmen, politikacı, bürokrat) ve kamu bütçesi. Öğrenciler 1. sınıf üniversite öğrencisi.\n\nSoru: "${soru}"\nÖğrenci yanıtları:\n${tanimlar}\n\nSadece JSON döndür:\n{"ton":{"yuk":35,"notr":40,"fayda":25},"algi_pusulasi":{"zorunluluk":80,"hizmet":45,"devlet_gucu":70,"toplumsal_fayda":35,"ekonomik_yuk":60},"cerceveler":{"ekonomik":{"sayi":12,"ornek":"örnek"},"hukuki":{"sayi":8,"ornek":"örnek"},"gunluk":{"sayi":15,"ornek":"örnek"}},"yanlis_kavramlar":[{"kavram":"Yanlış kavram","duzeltme":"Doğru açıklama"}],"pedagoji":"Bu yanıtlara bakarak öğretim üyesine 2-3 cümle somut öneri: hangi kavram eksik, ne üzerinde durulmalı?"}`}]})});
+    const data=await res.json();
+    const text=data.content.map(i=>i.text||'').join('');
+    const result=JSON.parse(text.replace(/```json|```/g,'').trim());
+    renderAnaliz(result);
+  }catch(e){alert('Analiz hatası: '+e.message);}
+  btn.disabled=false;btn.textContent='🔍 Analiz';
+}
+
+function renderAnaliz(r){
+  const panel=document.getElementById('analizPanel');
+  if(!panel)return;
+  panel.classList.add('visible');
+  const{yuk,notr,fayda}=r.ton;
+  document.getElementById('tYuk').style.width=yuk+'%';
+  document.getElementById('tNotr').style.width=notr+'%';
+  document.getElementById('tFayda').style.width=fayda+'%';
+  document.getElementById('tYP').textContent=yuk+'%';
+  document.getElementById('tNP').textContent=notr+'%';
+  document.getElementById('tFP').textContent=fayda+'%';
+  const ap=r.algi_pusulasi;
+  if(radarObj)radarObj.destroy();
+  radarObj=new Chart(document.getElementById('radarChart'),{type:'radar',data:{labels:['Zorunluluk','Hizmet','Devlet Gücü','Toplumsal Fayda','Ekonomik Yük'],datasets:[{data:[ap.zorunluluk,ap.hizmet,ap.devlet_gucu,ap.toplumsal_fayda,ap.ekonomik_yuk],backgroundColor:'rgba(45,106,79,0.15)',borderColor:'#2d6a4f',borderWidth:2,pointBackgroundColor:'#2d6a4f',pointRadius:3}]},options:{responsive:true,scales:{r:{min:0,max:100,ticks:{stepSize:25,font:{size:9}},pointLabels:{font:{size:9,family:'DM Sans'}}}},plugins:{legend:{display:false}}}});
+  document.getElementById('cEko').textContent=r.cerceveler.ekonomik.sayi+' öğr.';
+  document.getElementById('cHuk').textContent=r.cerceveler.hukuki.sayi+' öğr.';
+  document.getElementById('cGun').textContent=r.cerceveler.gunluk.sayi+' öğr.';
+  document.getElementById('cEkoO').textContent='"'+r.cerceveler.ekonomik.ornek+'"';
+  document.getElementById('cHukO').textContent='"'+r.cerceveler.hukuki.ornek+'"';
+  document.getElementById('cGunO').textContent='"'+r.cerceveler.gunluk.ornek+'"';
+  if(r.yanlis_kavramlar?.length){document.getElementById('yanlisBlok').style.display='block';document.getElementById('yanlisList').innerHTML=r.yanlis_kavramlar.map(y=>`<div class="yanlis-item"><strong>${escHtml(y.kavram)}:</strong> ${escHtml(y.duzeltme)}</div>`).join('');}
+  document.getElementById('pedMetin').textContent=r.pedagoji;
+  panel.scrollIntoView({behavior:'smooth'});
+}
+
+// GENEL RAPOR
+async function genelRapor(){
+  if(!tumYanitlar.length)return;
+  const btn=document.getElementById('btnRapor');
+  btn.disabled=true;btn.textContent='⏳';
+  const ozet=sorular.map((s,i)=>{
+    const y=tumYanitlar.filter(r=>r.soruIdx===i);
+    return `Soru ${i+1} (${TIP_LABEL[s.tip]}): "${s.soru}" — ${y.length} yanıt`;
+  }).join('\n');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:`Aşağıdaki ders oturumunu analiz et. Her soru için kısa bir değerlendirme yap ve genel bir pedagojik rapor oluştur. Sadece JSON döndür:\n\n${ozet}\n\nTüm yanıtlar:\n${tumYanitlar.map(r=>`[S${r.soruIdx+1}] ${r.name}: "${r.text}"`).join('\n')}\n\n{"sorular":[{"no":1,"ozet":"kısa değerlendirme","anlasildi":true}],"genel":"genel pedagojik rapor 3-4 cümle","oneri":"bir sonraki ders için öneri"}`}]})});
+    const data=await res.json();
+    const text=data.content.map(i=>i.text||'').join('');
+    const result=JSON.parse(text.replace(/```json|```/g,'').trim());
+    renderRapor(result);
+  }catch(e){alert('Rapor hatası: '+e.message);}
+  btn.disabled=false;btn.textContent='📊 Rapor';
+}
+
+function renderRapor(r){
+  const panel=document.getElementById('raporPanel');
+  if(!panel)return;
+  panel.classList.add('visible');
+  panel.innerHTML=`<div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:12px;">📊 Genel Oturum Raporu</div>
+    ${r.sorular?.map(s=>`<div class="rapor-soru-item"><div class="rsi-soru">Soru ${s.no}: ${s.anlasildi?'✅':'⚠️'}</div><div class="rsi-ozet">${escHtml(s.ozet)}</div></div>`).join('')||''}
+    <div class="ped-kutu" style="margin-top:12px;"><div style="font-size:10px;font-weight:700;color:#2d6a4f;margin-bottom:5px;">Genel Değerlendirme</div><div style="font-size:12px;line-height:1.7;">${escHtml(r.genel)}</div></div>
+    <div style="background:#fff3e0;border:1px solid #ffe082;border-radius:8px;padding:12px;margin-top:8px;font-size:12px;line-height:1.6;"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Öneri</strong>${escHtml(r.oneri)}</div>`;
+  panel.scrollIntoView({behavior:'smooth'});
+}
+
+// CSV
+function csvIndir(){
+  if(!tumYanitlar.length)return;
+  const satirlar=[['\uFEFFNo','Ad Soyad','Soru No','Soru Metni','Yanıt','Tür','Tarih'],...tumYanitlar.map((r,i)=>[i+1,r.name||'',r.soruIdx!==undefined?r.soruIdx+1:'',sorular[r.soruIdx]?.soru||'',(r.text||'').replace(/"/g,'""'),TIP_LABEL[r.tip]||r.tip||'',r.ts?new Date(r.ts).toLocaleString('tr-TR'):'' ])];
+  const csv=satirlar.map(s=>s.map(h=>`"${h}"`).join(',')).join('\r\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=`ders-oturumu-${new Date().toLocaleDateString('tr-TR').replace(/\./g,'-')}.csv`;
+  a.click();
+}
+
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>
