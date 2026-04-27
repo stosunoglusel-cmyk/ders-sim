@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SimÃ¼lasyon Paneli â€” Kamu Ekonomisi</title>
+<title>Sim&#252;lasyon Paneli ? Kamu Ekonomisi</title>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -58,7 +58,7 @@ header h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
 .btn:disabled{opacity:0.35;cursor:default;}
 .orta-icerik{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
 
-/* Soru gÃ¶ster */
+/* Soru g&#246;ster */
 .buyuk-soru{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;border-left:4px solid var(--accent);padding-left:14px;line-height:1.4;}
 .stat-row{display:flex;gap:8px;}
 .stat{background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;text-align:center;}
@@ -80,7 +80,7 @@ header h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
 .rkm-isim{font-size:13px;font-weight:600;}
 .rkm-kisi{font-size:11px;color:var(--accent2);margin-top:2px;}
 
-/* Kura modalÄ± */
+/* Kura modal&#305; */
 .modal-arka{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
 .modal-arka.acik{display:flex;}
 .modal{background:white;border-radius:16px;padding:24px;width:460px;max-height:80vh;overflow-y:auto;}
@@ -93,14 +93,14 @@ header h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
 .btn-kura{flex:1;padding:11px;background:var(--accent2);color:white;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
 .btn-kapat{padding:11px 16px;background:white;border:1.5px solid var(--border);border-radius:9px;font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;}
 
-/* Kavram seÃ§ici */
+/* Kavram se&#231;ici */
 .kavram-secici{display:flex;flex-direction:column;gap:8px;}
 .kavram-btn{padding:12px 14px;border-radius:9px;border:1.5px solid var(--border);background:white;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;font-size:13px;transition:all 0.15s;}
 .kavram-btn:hover{border-color:var(--accent2);}
 .kavram-btn.secili{border-color:var(--accent2);background:#e8f5e9;}
 .kavram-btn strong{display:block;margin-bottom:2px;font-family:'Syne',sans-serif;}
 
-/* SAÄ */
+/* SA&#286; */
 .sag{border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
 .sb-bolum{padding:10px 12px;border-bottom:1px solid var(--border);}
 .sb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600;margin-bottom:6px;}
@@ -114,12 +114,12 @@ header h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
 </head>
 <body>
 <header>
-  <h1>SimÃ¼lasyon Paneli â€” Kamu Ekonomisi: Siyasi SÃ¼reÃ§</h1>
-  <div class="live-b"><div class="dot off" id="liveDot"></div><span id="liveStatus">HazÄ±r</span></div>
+  <h1>Sim&#252;lasyon Paneli ? Kamu Ekonomisi: Siyasi S&#252;re&#231;</h1>
+  <div class="live-b"><div class="dot off" id="liveDot"></div><span id="liveStatus">Haz&#305;r</span></div>
 </header>
 
 <div class="layout">
-  <!-- SOL: Sahne seÃ§ici -->
+  <!-- SOL: Sahne se?ici -->
   <div class="sol">
     <div class="sol-header">
       <div class="sol-baslik">Sahneler</div>
@@ -131,8 +131,8 @@ header h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
     </div>
     <div class="sol-icerik" id="solIcerik"></div>
     <div class="sol-footer">
-      <button class="btn primary" id="btnBaslat" onclick="simulasyonBaslat()">SimÃ¼lasyonu BaÅŸlat</button>
-      <button class="btn danger" id="btnBitir" onclick="simulasyonBitir()" disabled style="display:none">SimÃ¼lasyonu Bitir</button>
+      <button class="btn primary" id="btnBaslat" onclick="simulasyonBaslat()">Sim&#252;lasyonu Ba&#351;lat</button>
+      <button class="btn danger" id="btnBitir" onclick="simulasyonBitir()" disabled style="display:none">Sim&#252;lasyonu Bitir</button>
     </div>
   </div>
 
@@ -140,38 +140,38 @@ header h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
   <div class="orta">
     <div class="orta-header">
       <div class="asama-bilgi">
-        <span class="asama-badge" id="asamaBadge">BaÅŸlamadÄ±</span>
-        <span style="font-size:13px;color:var(--muted)" id="asamaAciklama">SimÃ¼lasyonu baÅŸlatÄ±n</span>
+        <span class="asama-badge" id="asamaBadge">Ba&#351;lamad&#305;</span>
+        <span style="font-size:13px;color:var(--muted)" id="asamaAciklama">Sim&#252;lasyonu ba&#351;lat&#305;n</span>
       </div>
       <div class="orta-aksiyonlar" id="aksiyonlar"></div>
     </div>
     <div class="orta-icerik" id="ortaIcerik">
-      <div class="bos">SimÃ¼lasyonu baÅŸlatmak iÃ§in sol alttaki butona tÄ±klayÄ±n.</div>
+      <div class="bos">Sim&#252;lasyonu ba&#351;latmak i&#231;in sol alttaki butona t&#305;klay&#305;n.</div>
     </div>
   </div>
 
-  <!-- SAÄ -->
+  <!-- SA? -->
   <div class="sag">
     <div class="sb-bolum">
-      <div class="sb-label">Ã–ÄŸrenci BaÄŸlantÄ±sÄ±</div>
+      <div class="sb-label">&#214;&#287;renci Ba&#287;lant&#305;s&#305;</div>
       <div id="qrDiv" style="display:flex;justify-content:center;margin:4px 0"></div>
       <div style="font-size:10px;color:var(--muted);text-align:center;word-break:break-all;line-height:1.4" id="qrUrl"></div>
     </div>
     <div class="sb-bolum">
-      <div class="sb-label">KatÄ±lÄ±mcÄ±lar <span id="katSayac" style="color:var(--accent2)">(0)</span></div>
+      <div class="sb-label">Kat&#305;l&#305;mc&#305;lar <span id="katSayac" style="color:var(--accent2)">(0)</span></div>
     </div>
     <div class="katilimci-list" id="katList"></div>
   </div>
 </div>
 
-<!-- Kura ModalÄ± -->
+<!-- Kura Modal? -->
 <div class="modal-arka" id="kuraModal">
   <div class="modal">
-    <div class="modal-baslik" id="kuraModalBaslik">Rol DaÄŸÄ±tÄ±mÄ± â€” Kura</div>
+    <div class="modal-baslik" id="kuraModalBaslik">Rol Da&#287;&#305;t&#305;m&#305; ? Kura</div>
     <div id="kuraIcerik"></div>
     <div class="modal-footer">
-      <button class="btn-kapat" onclick="kuraKapat()">Ä°ptal</button>
-      <button class="btn-kura" onclick="kuraYap()">Kura Ã‡ek ve Ata</button>
+      <button class="btn-kapat" onclick="kuraKapat()">&#304;ptal</button>
+      <button class="btn-kura" onclick="kuraYap()">Kura &#199;ek ve Ata</button>
     </div>
   </div>
 </div>
@@ -182,46 +182,46 @@ const STUDENT_URL='https://stosunoglusel-cmyk.github.io/ders-sim/simulasyon-ogre
 
 const SAHNELER={
   1:{
-    isim:'SeÃ§men Sahnesi',
-    aciklama:'Ä°ki aday profili sunulur. SÄ±nÄ±f 30 saniyede oy kullanÄ±r.',
+    isim:'Se&#231;men Sahnesi',
+    aciklama:'&#304;ki aday profili sunulur. S&#305;n&#305;f 30 saniyede oy kullan&#305;r.',
     kavram_aday:'Rasyonel bilgisizlik',
-    kavram_aciklama:'Bir seÃ§menin tek oyunun seÃ§im sonucuna etkisi sÄ±fÄ±ra yakÄ±n. Bu yÃ¼zden derinlemesine araÅŸtÄ±rmak rasyonel deÄŸil â€” seÃ§men en tanÄ±dÄ±k, en kolay anlaÅŸÄ±lan adayÄ± seÃ§er.',
+    kavram_aciklama:'Bir se&#231;menin tek oyunun se&#231;im sonucuna etkisi s&#305;f&#305;ra yak&#305;n. Bu y&#252;zden derinlemesine ara&#351;t&#305;rmak rasyonel de&#287;il ? se&#231;men en tan&#305;d&#305;k, en kolay anla&#351;&#305;lan aday&#305; se&#231;er.',
     roller:[
-      {id:'a1',isim:'Aday A â€” Reform',tip:'politikaci',aciklama:'Uzun vadeli eÄŸitim reformu Ã¶neriyorsun. ProgramÄ±n karmaÅŸÄ±k ama gerÃ§ekten etkili.',gorev:'Kendini tanÄ±t, programÄ±nÄ±n 3 ana maddesini aÃ§Ä±kla. Teknik detay ver.',sahne_gorevi:'30 saniyede seÃ§menlere hitap et. ProgramÄ±nÄ± anlat.'},
-      {id:'a2',isim:'Aday B â€” Vaat',tip:'secmen',aciklama:'Basit ve popÃ¼ler vaatler veriyorsun: "KYK\'yÄ± ikiye katlayacaÄŸÄ±m, ulaÅŸÄ±m Ã¼cretsiz olacak."',gorev:'Somut vaat ver. NasÄ±l finanse edeceÄŸini sorularsa geÃ§iÅŸtir.',sahne_gorevi:'30 saniyede seÃ§menlere hitap et. Vaatlerini sÃ¶yle.'},
-      {id:'m1',isim:'SeÃ§men Temsilcisi',tip:'secmen',aciklama:'KararsÄ±z seÃ§meni temsil ediyorsun.',gorev:'Her iki adaya birer soru sor. Sonra sÄ±nÄ±f adÄ±na kararÄ±nÄ± aÃ§Ä±kla.',sahne_gorevi:'Adaylara sorularÄ±nÄ± sor.'}
+      {id:'a1',isim:'Aday A ? Reform',tip:'politikaci',aciklama:'Uzun vadeli e&#287;itim reformu &#246;neriyorsun. Program&#305;n karma&#351;&#305;k ama ger&#231;ekten etkili.',gorev:'Kendini tan&#305;t, program&#305;n&#305;n 3 ana maddesini a&#231;&#305;kla. Teknik detay ver.',sahne_gorevi:'30 saniyede se&#231;menlere hitap et. Program&#305;n&#305; anlat.'},
+      {id:'a2',isim:'Aday B ? Vaat',tip:'secmen',aciklama:'Basit ve pop&#252;ler vaatler veriyorsun: "KYK\'y&#305; ikiye katlayaca&#287;&#305;m, ula&#351;&#305;m &#252;cretsiz olacak."',gorev:'Somut vaat ver. Nas&#305;l finanse edece&#287;ini sorularsa ge&#231;i&#351;tir.',sahne_gorevi:'30 saniyede se&#231;menlere hitap et. Vaatlerini s&#246;yle.'},
+      {id:'m1',isim:'Se&#231;men Temsilcisi',tip:'secmen',aciklama:'Karars&#305;z se&#231;meni temsil ediyorsun.',gorev:'Her iki adaya birer soru sor. Sonra s&#305;n&#305;f ad&#305;na karar&#305;n&#305; a&#231;&#305;kla.',sahne_gorevi:'Adaylara sorular&#305;n&#305; sor.'}
     ],
-    oylama_soru:'Hangi adayÄ± seÃ§erdiniz?',
-    oylama_secenekler:['Aday A â€” Reform programÄ±','Aday B â€” Somut vaatler','HiÃ§birini, baÅŸka aday isterim']
+    oylama_soru:'Hangi aday&#305; se&#231;erdiniz?',
+    oylama_secenekler:['Aday A ? Reform program&#305;','Aday B ? Somut vaatler','Hi&#231;birini, ba&#351;ka aday isterim']
   },
   2:{
-    isim:'PolitikacÄ± Sahnesi',
-    aciklama:'HÃ¼kÃ¼met bÃ¼tÃ§e kararÄ± alÄ±yor. Ä°ktidar ve muhalefet karÅŸÄ± karÅŸÄ±ya.',
-    kavram_aday:'KÄ±sa vadeli Ã¶nyargÄ±',
-    kavram_aciklama:'PolitikacÄ±nÄ±n siyasi ufku seÃ§im takviminden uzun deÄŸil. SeÃ§imden Ã¶nce gÃ¶rÃ¼nÃ¼r fayda yaratmak, seÃ§imden sonra etkisi olacak yatÄ±rÄ±mÄ± yapmaktan daha rasyonel â€” siyaset iÃ§in.',
+    isim:'Politikac&#305; Sahnesi',
+    aciklama:'H&#252;k&#252;met b&#252;t&#231;e karar&#305; al&#305;yor. &#304;ktidar ve muhalefet kar&#351;&#305; kar&#351;&#305;ya.',
+    kavram_aday:'K&#305;sa vadeli &#246;nyarg&#305;',
+    kavram_aciklama:'Politikac&#305;n&#305;n siyasi ufku se&#231;im takviminden uzun de&#287;il. Se&#231;imden &#246;nce g&#246;r&#252;n&#252;r fayda yaratmak, se&#231;imden sonra etkisi olacak yat&#305;r&#305;m&#305; yapmaktan daha rasyonel ? siyaset i&#231;in.',
     roller:[
-      {id:'p1',isim:'BaÅŸbakan',tip:'politikaci',aciklama:'HÃ¼kÃ¼meti temsil ediyorsun. 2 yÄ±l sonra seÃ§im var.',gorev:'BÃ¼tÃ§ede eÄŸitime mi, altyapÄ±ya mÄ± aÄŸÄ±rlÄ±k verirsin? KararÄ±nÄ± ve gerekÃ§eni aÃ§Ä±kla.',sahne_gorevi:'BÃ¼tÃ§e teklifini sun. SeÃ§men tepkisini izle.'},
-      {id:'p2',isim:'Maliye BakanÄ±',tip:'politikaci',aciklama:'BÃ¼tÃ§e disiplini taraftarÄ±sÄ±n. AÃ§Ä±k vermemek Ã¶nceliÄŸin.',gorev:'BaÅŸbakanÄ±n popÃ¼list harcamalarÄ±nÄ± frenlemeye Ã§alÄ±ÅŸ.',sahne_gorevi:'Harcama tekliflerine itiraz et, bÃ¼tÃ§e kÄ±sÄ±tÄ±nÄ± savun.'},
-      {id:'p3',isim:'Muhalefet Lideri',tip:'secmen',aciklama:'HÃ¼kÃ¼metin kararÄ±nÄ± eleÅŸtireceksin.',gorev:'En zayÄ±f noktayÄ± bul ve vur. Alternatif sun.',sahne_gorevi:'HÃ¼kÃ¼meti eleÅŸtir, alternatif bÃ¼tÃ§e teklifini aÃ§Ä±kla.'},
-      {id:'p4',isim:'Lobi Temsilcisi',tip:'burokrat',aciklama:'Ä°ÅŸ dÃ¼nyasÄ±nÄ± temsil ediyorsun. Vergi artÄ±ÅŸÄ±na karÅŸÄ±sÄ±n.',gorev:'PolitikacÄ±larla gÃ¶rÃ¼ÅŸ, vergi artÄ±ÅŸÄ±nÄ± engellemeye Ã§alÄ±ÅŸ.',sahne_gorevi:'PolitikacÄ±lara baskÄ± uygula.'},
-      {id:'p5',isim:'Muhalefet Milletvekili',tip:'secmen',aciklama:'HÃ¼kÃ¼metin bÃ¼tÃ§esine itiraz edeceksin.',gorev:'Harcama kalemlerini sorgula.',sahne_gorevi:'HÃ¼kÃ¼mete soru yÃ¶nelt.'}
+      {id:'p1',isim:'Ba&#351;bakan',tip:'politikaci',aciklama:'H&#252;k&#252;meti temsil ediyorsun. 2 y&#305;l sonra se&#231;im var.',gorev:'B&#252;t&#231;ede e&#287;itime mi, altyap&#305;ya m&#305; a&#287;&#305;rl&#305;k verirsin? Karar&#305;n&#305; ve gerek&#231;eni a&#231;&#305;kla.',sahne_gorevi:'B&#252;t&#231;e teklifini sun. Se&#231;men tepkisini izle.'},
+      {id:'p2',isim:'Maliye Bakan&#305;',tip:'politikaci',aciklama:'B&#252;t&#231;e disiplini taraftar&#305;s&#305;n. A&#231;&#305;k vermemek &#246;nceli&#287;in.',gorev:'Ba&#351;bakan&#305;n pop&#252;list harcamalar&#305;n&#305; frenlemeye &#231;al&#305;&#351;.',sahne_gorevi:'Harcama tekliflerine itiraz et, b&#252;t&#231;e k&#305;s&#305;t&#305;n&#305; savun.'},
+      {id:'p3',isim:'Muhalefet Lideri',tip:'secmen',aciklama:'H&#252;k&#252;metin karar&#305;n&#305; ele&#351;tireceksin.',gorev:'En zay&#305;f noktay&#305; bul ve vur. Alternatif sun.',sahne_gorevi:'H&#252;k&#252;meti ele&#351;tir, alternatif b&#252;t&#231;e teklifini a&#231;&#305;kla.'},
+      {id:'p4',isim:'Lobi Temsilcisi',tip:'burokrat',aciklama:'&#304;&#351; d&#252;nyas&#305;n&#305; temsil ediyorsun. Vergi art&#305;&#351;&#305;na kar&#351;&#305;s&#305;n.',gorev:'Politikac&#305;larla g&#246;r&#252;&#351;, vergi art&#305;&#351;&#305;n&#305; engellemeye &#231;al&#305;&#351;.',sahne_gorevi:'Politikac&#305;lara bask&#305; uygula.'},
+      {id:'p5',isim:'Muhalefet Milletvekili',tip:'secmen',aciklama:'H&#252;k&#252;metin b&#252;t&#231;esine itiraz edeceksin.',gorev:'Harcama kalemlerini sorgula.',sahne_gorevi:'H&#252;k&#252;mete soru y&#246;nelt.'}
     ],
-    oylama_soru:'HÃ¼kÃ¼metin bÃ¼tÃ§e kararÄ±nÄ± doÄŸru buldunuz mu?',
-    oylama_secenekler:['Evet, doÄŸru tercih','HayÄ±r, yanlÄ±ÅŸ Ã¶ncelikler','KÄ±smen doÄŸru, ama eksik']
+    oylama_soru:'H&#252;k&#252;metin b&#252;t&#231;e karar&#305;n&#305; do&#287;ru buldunuz mu?',
+    oylama_secenekler:['Evet, do&#287;ru tercih','Hay&#305;r, yanl&#305;&#351; &#246;ncelikler','K&#305;smen do&#287;ru, ama eksik']
   },
   3:{
-    isim:'BÃ¼rokrat Sahnesi',
-    aciklama:'BÃ¼tÃ§e kÄ±sÄ±lacak. Her bakanlÄ±k masada. Kim kesecek?',
-    kavram_aday:'BÃ¼rokratik bÃ¼yÃ¼me gÃ¼dÃ¼sÃ¼',
-    kavram_aciklama:'BÃ¼tÃ§e ve kadro bÃ¼yÃ¼tmek bÃ¼rokratÄ±n bireysel Ã§Ä±karÄ±na hizmet eder â€” kariyer, prestij, kaynak. Bu yÃ¼zden hiÃ§bir bakanlÄ±k kendi bÃ¼tÃ§esini gÃ¶nÃ¼llÃ¼ kÄ±smaz. Sistem bu davranÄ±ÅŸÄ± Ã¶dÃ¼llendiriyor.',
+    isim:'B&#252;rokrat Sahnesi',
+    aciklama:'B&#252;t&#231;e k&#305;s&#305;lacak. Her bakanl&#305;k masada. Kim kesecek?',
+    kavram_aday:'B&#252;rokratik b&#252;y&#252;me g&#252;d&#252;s&#252;',
+    kavram_aciklama:'B&#252;t&#231;e ve kadro b&#252;y&#252;tmek b&#252;rokrat&#305;n bireysel &#231;&#305;kar&#305;na hizmet eder ? kariyer, prestij, kaynak. Bu y&#252;zden hi&#231;bir bakanl&#305;k kendi b&#252;t&#231;esini g&#246;n&#252;ll&#252; k&#305;smaz. Sistem bu davran&#305;&#351;&#305; &#246;d&#252;llendiriyor.',
     roller:[
-      {id:'b1',isim:'EÄŸitim BakanlÄ±ÄŸÄ± MÃ¼steÅŸarÄ±',tip:'burokrat',aciklama:'EÄŸitim bÃ¼tÃ§esi kesilirse bÃ¼yÃ¼k kayÄ±p. Bunu savunmalÄ±sÄ±n.',gorev:'EÄŸitim bÃ¼tÃ§esinin neden kesilemeyeceÄŸini anlat. BaÅŸka bakanlÄ±ktan kesi Ã¶ner.',sahne_gorevi:'BÃ¼tÃ§eni savun, baÅŸkasÄ±nÄ±n kesilmesini Ã¶ner.'},
-      {id:'b2',isim:'SaÄŸlÄ±k BakanlÄ±ÄŸÄ± MÃ¼steÅŸarÄ±',tip:'burokrat',aciklama:'SaÄŸlÄ±k bÃ¼tÃ§esi kutsal. Bunu herkes kabul etmeli.',gorev:'SaÄŸlÄ±k bÃ¼tÃ§esinin dokunulmaz olduÄŸunu savun.',sahne_gorevi:'BÃ¼tÃ§eni savun, baÅŸkasÄ±nÄ±n kesilmesini Ã¶ner.'},
-      {id:'b3',isim:'UlaÅŸtÄ±rma BakanlÄ±ÄŸÄ± MÃ¼steÅŸarÄ±',tip:'burokrat',aciklama:'AltyapÄ± projelerin yarÄ±da kalabilir. Kesilemezsin.',gorev:'Projelerinin yarÄ±da kalmayacaÄŸÄ±nÄ± garanti et.',sahne_gorevi:'BÃ¼tÃ§eni savun, baÅŸkasÄ±nÄ±n kesilmesini Ã¶ner.'},
-      {id:'b4',isim:'Hazine MÃ¼steÅŸarÄ±',tip:'politikaci',aciklama:'Toplam bÃ¼tÃ§eyi 15 birim kÄ±smak zorundasÄ±n. Birisi vermeli.',gorev:'MÃ¼zakereyi yÃ¶net. Kim kesecek? Karar al.',sahne_gorevi:'Kimin kesmesi gerektiÄŸine karar ver.'}
+      {id:'b1',isim:'E&#287;itim Bakanl&#305;&#287;&#305; M&#252;ste&#351;ar&#305;',tip:'burokrat',aciklama:'E&#287;itim b&#252;t&#231;esi kesilirse b&#252;y&#252;k kay&#305;p. Bunu savunmal&#305;s&#305;n.',gorev:'E&#287;itim b&#252;t&#231;esinin neden kesilemeyece&#287;ini anlat. Ba&#351;ka bakanl&#305;ktan kesi &#246;ner.',sahne_gorevi:'B&#252;t&#231;eni savun, ba&#351;kas&#305;n&#305;n kesilmesini &#246;ner.'},
+      {id:'b2',isim:'Sa&#287;l&#305;k Bakanl&#305;&#287;&#305; M&#252;ste&#351;ar&#305;',tip:'burokrat',aciklama:'Sa&#287;l&#305;k b&#252;t&#231;esi kutsal. Bunu herkes kabul etmeli.',gorev:'Sa&#287;l&#305;k b&#252;t&#231;esinin dokunulmaz oldu&#287;unu savun.',sahne_gorevi:'B&#252;t&#231;eni savun, ba&#351;kas&#305;n&#305;n kesilmesini &#246;ner.'},
+      {id:'b3',isim:'Ula&#351;t&#305;rma Bakanl&#305;&#287;&#305; M&#252;ste&#351;ar&#305;',tip:'burokrat',aciklama:'Altyap&#305; projelerin yar&#305;da kalabilir. Kesilemezsin.',gorev:'Projelerinin yar&#305;da kalmayaca&#287;&#305;n&#305; garanti et.',sahne_gorevi:'B&#252;t&#231;eni savun, ba&#351;kas&#305;n&#305;n kesilmesini &#246;ner.'},
+      {id:'b4',isim:'Hazine M&#252;ste&#351;ar&#305;',tip:'politikaci',aciklama:'Toplam b&#252;t&#231;eyi 15 birim k&#305;smak zorundas&#305;n. Birisi vermeli.',gorev:'M&#252;zakereyi y&#246;net. Kim kesecek? Karar al.',sahne_gorevi:'Kimin kesmesi gerekti&#287;ine karar ver.'}
     ],
-    oylama_soru:'HiÃ§bir bakanlÄ±k gÃ¶nÃ¼llÃ¼ kesmedi. Bu neden?',
-    oylama_secenekler:['Ã‡Ã¼nkÃ¼ kÃ¶tÃ¼ insanlar','Ã‡Ã¼nkÃ¼ sistem bÃ¶yle davranmayÄ± Ã¶dÃ¼llendiriyor','Ã‡Ã¼nkÃ¼ bÃ¼tÃ§eler gerÃ§ekten yeterliydi','Ã‡Ã¼nkÃ¼ liderlik eksikliÄŸi vardÄ±']
+    oylama_soru:'Hi&#231;bir bakanl&#305;k g&#246;n&#252;ll&#252; kesmedi. Bu neden?',
+    oylama_secenekler:['&#199;&#252;nk&#252; k&#246;t&#252; insanlar','&#199;&#252;nk&#252; sistem b&#246;yle davranmay&#305; &#246;d&#252;llendiriyor','&#199;&#252;nk&#252; b&#252;t&#231;eler ger&#231;ekten yeterliydi','&#199;&#252;nk&#252; liderlik eksikli&#287;i vard&#305;']
   }
 };
 
@@ -278,7 +278,7 @@ function renderSolIcerik(){
       <div class="sk-baslik">${s.isim}</div>
       <div class="sk-alt">${s.aciklama}</div>
     </div>
-    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin:8px 0 6px">Roller (${s.roller.length} kiÅŸi)</div>`;
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin:8px 0 6px">Roller (${s.roller.length} ki&#351;i)</div>`;
   s.roller.forEach(r=>{
     const atanan=roller[r.id];
     const renkler={politikaci:'#2d6a4f',secmen:'#c84b31',burokrat:'#457b9d'};
@@ -286,7 +286,7 @@ function renderSolIcerik(){
       <div class="rol-renk" style="background:${renkler[r.tip]||'#888'}"></div>
       <div style="flex:1">
         <div class="rol-isim-text">${esc(r.isim)}</div>
-        <div class="rol-kisi">${atanan?esc(atanan):' â€” atanmadÄ±'}</div>
+        <div class="rol-kisi">${atanan?esc(atanan):' ? atanmad&#305;'}</div>
       </div>
     </div>`;
   });
@@ -300,7 +300,7 @@ function simulasyonBaslat(){
   document.getElementById('btnBitir').style.display='block';
   document.getElementById('btnBitir').disabled=false;
   document.getElementById('liveDot').className='dot';
-  document.getElementById('liveStatus').textContent='CanlÄ±';
+  document.getElementById('liveStatus').textContent='Canl&#305;';
   sahneBaslat(1);
 }
 
@@ -320,7 +320,7 @@ function sahneBaslat(n){
 
 function renderOrta(){
   const s=SAHNELER[aktifSahne];
-  const asamaLabels={rol_dagitim:'Rol DaÄŸÄ±tÄ±mÄ±',hazirlik:'HazÄ±rlÄ±k',sahne:'Sahne CanlÄ±',oylama:'Oylama',kavram:'Kavram'};
+  const asamaLabels={rol_dagitim:'Rol Da&#287;&#305;t&#305;m&#305;',hazirlik:'Haz&#305;rl&#305;k',sahne:'Sahne Canl&#305;',oylama:'Oylama',kavram:'Kavram'};
   const asamaRenkler={rol_dagitim:'',hazirlik:'',sahne:'aktif',oylama:'oylama',kavram:'kavram'};
   document.getElementById('asamaBadge').textContent=asamaLabels[mevcutAsama]||mevcutAsama;
   document.getElementById('asamaBadge').className='asama-badge '+(asamaRenkler[mevcutAsama]||'');
@@ -328,33 +328,33 @@ function renderOrta(){
 
   let aksHtml='';
   if(mevcutAsama==='rol_dagitim'){
-    aksHtml=`<button class="btn mavi" onclick="kuraAc()">Kura Ã‡ek</button>
-             <button class="btn primary" onclick="asamaGec('hazirlik')">HazÄ±rlÄ±ÄŸa GeÃ§</button>`;
+    aksHtml=`<button class="btn mavi" onclick="kuraAc()">Kura &#199;ek</button>
+             <button class="btn primary" onclick="asamaGec('hazirlik')">Haz&#305;rl&#305;&#287;a Ge&#231;</button>`;
   } else if(mevcutAsama==='hazirlik'){
-    aksHtml=`<button class="btn primary" onclick="asamaGec('sahne')">Sahneyi BaÅŸlat</button>`;
+    aksHtml=`<button class="btn primary" onclick="asamaGec('sahne')">Sahneyi Ba&#351;lat</button>`;
   } else if(mevcutAsama==='sahne'){
-    aksHtml=`<button class="btn mavi" onclick="asamaGec('oylama')">Oylama BaÅŸlat</button>`;
+    aksHtml=`<button class="btn mavi" onclick="asamaGec('oylama')">Oylama Ba&#351;lat</button>`;
   } else if(mevcutAsama==='oylama'){
-    aksHtml=`<button class="btn primary" onclick="asamaGec('kavram')">KavramÄ± GÃ¶ster</button>`;
+    aksHtml=`<button class="btn primary" onclick="asamaGec('kavram')">Kavram&#305; G&#246;ster</button>`;
   } else if(mevcutAsama==='kavram'){
     if(aktifSahne<3){
       aksHtml=`<button class="btn primary" onclick="sahneBaslat(${aktifSahne+1})">Sonraki Sahne</button>`;
     } else {
-      aksHtml=`<button class="btn danger" onclick="simulasyonBitir()">SimÃ¼lasyonu Bitir</button>`;
+      aksHtml=`<button class="btn danger" onclick="simulasyonBitir()">Sim&#252;lasyonu Bitir</button>`;
     }
   }
   document.getElementById('aksiyonlar').innerHTML=aksHtml;
 
   let html='';
   if(mevcutAsama==='rol_dagitim'){
-    html+=`<div class="buyuk-soru">${s.isim} â€” Rol DaÄŸÄ±tÄ±mÄ±</div>
-    <p style="font-size:13px;color:var(--muted);line-height:1.7">${s.aciklama}<br><br>Ã–ÄŸrenciler telefonda gÃ¶nÃ¼llÃ¼ oldu. "Kura Ã‡ek" ile rolleri ata, sonra "HazÄ±rlÄ±ÄŸa GeÃ§" de.</p>
+    html+=`<div class="buyuk-soru">${s.isim} ? Rol Da&#287;&#305;t&#305;m&#305;</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7">${s.aciklama}<br><br>&#214;&#287;renciler telefonda g&#246;n&#252;ll&#252; oldu. "Kura &#199;ek" ile rolleri ata, sonra "Haz&#305;rl&#305;&#287;a Ge&#231;" de.</p>
     <div class="gorsel-kutu">
       <div class="gorsel-baslik">Rol Listesi</div>
       <div class="rol-liste-grid">`;
     const roller=atananRoller[aktifSahne]||{};
     s.roller.forEach(r=>{
-      const atanan=roller[r.id]||'â€”';
+      const atanan=roller[r.id]||'?';
       const renkler={politikaci:'#2d6a4f',secmen:'#c84b31',burokrat:'#457b9d'};
       html+=`<div class="rol-kart-mini">
         <div class="rkm-tip" style="color:${renkler[r.tip]}">${r.tip}</div>
@@ -364,26 +364,26 @@ function renderOrta(){
     });
     html+=`</div></div>`;
   } else if(mevcutAsama==='hazirlik'){
-    html+=`<div class="buyuk-soru">${s.isim} â€” HazÄ±rlÄ±k</div>
-    <p style="font-size:13px;color:var(--muted);line-height:1.7">Rol alan Ã¶ÄŸrenciler telefonlarÄ±nda gÃ¶revlerini okuyor. 2-3 dakika verin. HazÄ±r olduklarÄ±nda "Sahneyi BaÅŸlat" deyin.</p>`;
+    html+=`<div class="buyuk-soru">${s.isim} ? Haz&#305;rl&#305;k</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7">Rol alan &#246;&#287;renciler telefonlar&#305;nda g&#246;revlerini okuyor. 2-3 dakika verin. Haz&#305;r olduklar&#305;nda "Sahneyi Ba&#351;lat" deyin.</p>`;
     html+=renderRolListesiHTML();
   } else if(mevcutAsama==='sahne'){
-    html+=`<div class="buyuk-soru">${s.isim} â€” CanlÄ±</div>
-    <p style="font-size:13px;color:var(--muted);line-height:1.7">Sahne oynanÄ±yor. Rol alan Ã¶ÄŸrencilere sÃ¶z verin. Kalan sÄ±nÄ±f izliyor. HazÄ±r olduÄŸunuzda "Oylama BaÅŸlat" deyin.</p>`;
+    html+=`<div class="buyuk-soru">${s.isim} ? Canl&#305;</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7">Sahne oynan&#305;yor. Rol alan &#246;&#287;rencilere s&#246;z verin. Kalan s&#305;n&#305;f izliyor. Haz&#305;r oldu&#287;unuzda "Oylama Ba&#351;lat" deyin.</p>`;
     html+=renderRolListesiHTML();
   } else if(mevcutAsama==='oylama'){
     html+=`<div class="buyuk-soru">${esc(s.oylama_soru)}</div>`;
     html+=`<div class="stat-row">
-      <div class="stat"><div class="stat-n" id="toplamOy">0</div><div class="stat-l">Oy SayÄ±sÄ±</div></div>
-      <div class="stat"><div class="stat-n" id="katilimYuzde">%0</div><div class="stat-l">KatÄ±lÄ±m</div></div>
+      <div class="stat"><div class="stat-n" id="toplamOy">0</div><div class="stat-l">Oy Say&#305;s&#305;</div></div>
+      <div class="stat"><div class="stat-n" id="katilimYuzde">%0</div><div class="stat-l">Kat&#305;l&#305;m</div></div>
     </div>`;
-    html+=`<div class="gorsel-kutu"><div class="gorsel-baslik">CanlÄ± SonuÃ§lar</div><div class="oy-bars" id="oyBarsDiv"></div></div>`;
+    html+=`<div class="gorsel-kutu"><div class="gorsel-baslik">Canl&#305; Sonu&#231;lar</div><div class="oy-bars" id="oyBarsDiv"></div></div>`;
   } else if(mevcutAsama==='kavram'){
     const kavramlar=[
       {isim:s.kavram_aday,aciklama:s.kavram_aciklama},
     ];
     html+=`<div class="buyuk-soru">Bu Sahneden Kavram</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Ekranda gÃ¶sterilecek kavramÄ± seÃ§in:</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Ekranda g&#246;sterilecek kavram&#305; se&#231;in:</p>
     <div class="kavram-secici">`;
     kavramlar.forEach((k,i)=>{
       html+=`<div class="kavram-btn ${seciliKavram===i?'secili':''}" onclick="kavramSec(${i},'${esc(k.isim)}','${esc(k.aciklama)}')">
@@ -401,7 +401,7 @@ function renderRolListesiHTML(){
   const roller=atananRoller[aktifSahne]||{};
   let html=`<div class="gorsel-kutu"><div class="gorsel-baslik">Aktif Roller</div><div class="rol-liste-grid">`;
   s.roller.forEach(r=>{
-    const atanan=roller[r.id]||'â€”';
+    const atanan=roller[r.id]||'?';
     const renkler={politikaci:'#2d6a4f',secmen:'#c84b31',burokrat:'#457b9d'};
     html+=`<div class="rol-kart-mini">
       <div class="rkm-tip" style="color:${renkler[r.tip]}">${r.isim}</div>
@@ -475,18 +475,18 @@ function kuraAc(){
   rolTalepRef.once('value',snap=>{
     const talepler=Object.values(snap.val()||{});
     const isimler=talepler.map(t=>t.isim).filter(Boolean);
-    let html=`<p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">GÃ¶nÃ¼llÃ¼ olmayan roller iÃ§in isim yazabilirsin. Kura butonu rastgele atar.</p>`;
-    html+=`<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">GÃ¶nÃ¼llÃ¼ler (${isimler.length})</div>`;
+    let html=`<p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">G&#246;n&#252;ll&#252; olmayan roller i&#231;in isim yazabilirsin. Kura butonu rastgele atar.</p>`;
+    html+=`<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">G&#246;n&#252;ll&#252;ler (${isimler.length})</div>`;
     if(isimler.length){
       isimler.forEach(n=>{html+=`<div class="talep-item"><span class="talep-isim">${esc(n)}</span></div>`;});
     } else {
-      html+=`<div style="font-size:12px;color:var(--muted);padding:8px 0">HenÃ¼z gÃ¶nÃ¼llÃ¼ yok.</div>`;
+      html+=`<div style="font-size:12px;color:var(--muted);padding:8px 0">Hen&#252;z g&#246;n&#252;ll&#252; yok.</div>`;
     }
     html+=`<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:12px 0 8px">Roller (${s.roller.length})</div>`;
     s.roller.forEach(r=>{
       const mevcut=atananRoller[kuraSahne]?.[r.id]||'';
       html+=`<div style="margin-bottom:6px"><div style="font-size:11px;color:var(--muted);margin-bottom:3px">${esc(r.isim)}</div>
-      <input class="kura-input" id="rol_${r.id}" value="${esc(mevcut)}" placeholder="Ä°sim gir veya kura Ã§ek..."/></div>`;
+      <input class="kura-input" id="rol_${r.id}" value="${esc(mevcut)}" placeholder="&#304;sim gir veya kura &#231;ek..."/></div>`;
     });
     document.getElementById('kuraIcerik').innerHTML=html;
     document.getElementById('kuraModal').classList.add('acik');
@@ -545,13 +545,13 @@ function renderKatilimcilar(){
   const list=document.getElementById('katList');
   const items=Object.values(katilimcilar);
   document.getElementById('katSayac').textContent='('+items.length+')';
-  if(!items.length){list.innerHTML='<div style="padding:12px;font-size:12px;color:var(--muted);text-align:center">HenÃ¼z kimse katÄ±lmadÄ±</div>';return;}
+  if(!items.length){list.innerHTML='<div style="padding:12px;font-size:12px;color:var(--muted);text-align:center">Hen&#252;z kimse kat&#305;lmad&#305;</div>';return;}
   const renkler={politikaci:'#2d6a4f',secmen:'#c84b31',burokrat:'#457b9d'};
   list.innerHTML=items.map(k=>`
     <div class="kat-item">
       <div class="kat-rol" style="background:${renkler[k.rol?.toLowerCase()]||'#888'}"></div>
       <div class="kat-isim">${esc(k.isim)}</div>
-      <div style="font-size:10px;color:var(--muted)">${esc(k.rol||'seÃ§men')}</div>
+      <div style="font-size:10px;color:var(--muted)">${esc(k.rol||'se&#231;men')}</div>
     </div>`).join('');
 }
 
