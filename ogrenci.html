@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Derse Katıl</title>
+<title>Derse KatÄ±l</title>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <style>
@@ -51,20 +51,20 @@ textarea.f{resize:none;line-height:1.6;}
 </style>
 </head>
 <body>
-<header><h1 id="baslik">Derse Katıl</h1></header>
+<header><h1 id="baslik">Derse KatÄ±l</h1></header>
 <div class="ilerleme"><div class="ilerleme-dolu" id="ilerleme" style="width:0%"></div></div>
 
 <div class="content" id="icerik">
   <div class="merkez">
-    <div class="ikon">⏳</div>
+    <div class="ikon">â³</div>
     <div class="bas">Bekleniyor...</div>
-    <div class="alt">Öğretmen başlatınca soru görünecek</div>
+    <div class="alt">Ã–ÄŸretmen baÅŸlatÄ±nca soru gÃ¶rÃ¼necek</div>
   </div>
 </div>
 
 <script>
 const FB_CONFIG={apiKey:'AIzaSyDFwRi7C49WQUjZlJEDEZNtg0Q82B1zeyM',projectId:'vergi-dc18f',databaseURL:'https://vergi-dc18f-default-rtdb.firebaseio.com'};
-const TIPLER={tanim:'Tanım Yaz',yoklama:'Anlama Kontrolü',secmeli:'Çoktan Seçmeli',siralama:'Sıralama',cagrisim:'Kelime Çağrışımı',yansima:'Ders Sonu Yansıma'};
+const TIPLER={tanim:'TanÄ±m Yaz',yoklama:'Anlama KontrolÃ¼',secmeli:'Ã‡oktan SeÃ§meli',siralama:'SÄ±ralama',cagrisim:'Kelime Ã‡aÄŸrÄ±ÅŸÄ±mÄ±',yansima:'Ders Sonu YansÄ±ma'};
 
 let db,sessionRef,responsesRef;
 let isim='';
@@ -88,10 +88,10 @@ window.onload=()=>{
 function guncelle(snap){
   const s=snap.val();
   if(!s||!s.active){
-    goster('<div class="merkez"><div class="ikon">'+(s?'🏁':'⏳')+'</div><div class="bas">'+(s?'Oturum sona erdi':'Bekleniyor...')+'</div><div class="alt">'+(s?'Teşekkürler!':'Öğretmen başlatınca soru görünecek')+'</div></div>');
+    goster('<div class="merkez"><div class="ikon">'+(s?'ğŸ':'â³')+'</div><div class="bas">'+(s?'Oturum sona erdi':'Bekleniyor...')+'</div><div class="alt">'+(s?'TeÅŸekkÃ¼rler!':'Ã–ÄŸretmen baÅŸlatÄ±nca soru gÃ¶rÃ¼necek')+'</div></div>');
     return;
   }
-  document.getElementById('baslik').textContent=s.baslik||'Derse Katıl';
+  document.getElementById('baslik').textContent=s.baslik||'Derse KatÄ±l';
   // Yeni oturum
   if(s.oturumId&&s.oturumId!==oturumId){oturumId=s.oturumId;gonderildi={};}
   const idx=s.soruIdx||0;
@@ -101,13 +101,13 @@ function guncelle(snap){
   // Bu soruya cevap verdik mi?
   if(gonderildi[idx]){
     if(Object.keys(gonderildi).length>=toplam){
-      goster('<div class="merkez"><div class="ikon">🎓</div><div class="bas">Tamamlandı!</div><div class="alt">Tüm sorulara yanıt verdiniz.</div></div>');
+      goster('<div class="merkez"><div class="ikon">ğŸ“</div><div class="bas">TamamlandÄ±!</div><div class="alt">TÃ¼m sorulara yanÄ±t verdiniz.</div></div>');
     } else {
-      goster('<div class="merkez"><div class="ikon">✅</div><div class="bas">Yanıtınız alındı!</div><div class="alt">Sonraki soru bekleniyor...</div></div>');
+      goster('<div class="merkez"><div class="ikon">âœ…</div><div class="bas">YanÄ±tÄ±nÄ±z alÄ±ndÄ±!</div><div class="alt">Sonraki soru bekleniyor...</div></div>');
     }
     return;
   }
-  // İsim yoksa önce onu al
+  // Ä°sim yoksa Ã¶nce onu al
   if(!isim){
     soruGoster(s,idx,toplam,true);
   } else {
@@ -125,19 +125,19 @@ function soruGoster(s,idx,toplam,isimSor){
   const harfler=['A','B','C','D','E','F'];
   let cevapHtml='';
   if(tip==='tanim'||tip==='yansima'){
-    cevapHtml='<label class="label">Yanıtınız</label><textarea class="f" id="cevap" rows="4" maxlength="400" placeholder="Buraya yazın..."></textarea>';
+    cevapHtml='<label class="label">YanÄ±tÄ±nÄ±z</label><textarea class="f" id="cevap" rows="4" maxlength="400" placeholder="Buraya yazÄ±n..."></textarea>';
   } else if(tip==='yoklama'){
-    const opts=soru.secenekler||[{emoji:'😊',metin:'Anladım'},{emoji:'🤔',metin:'Kısmen'},{emoji:'😕',metin:'Anlamadım'}];
-    cevapHtml='<div class="secenekler">'+opts.map((o,i)=>`<button class="sec-btn" onclick="sec(${i},this)"><span style="font-size:20px">${o.emoji||'•'}</span><span>${o.metin||o}</span></button>`).join('')+'</div>';
+    const opts=soru.secenekler||[{emoji:'ğŸ˜Š',metin:'AnladÄ±m'},{emoji:'ğŸ¤”',metin:'KÄ±smen'},{emoji:'ğŸ˜•',metin:'AnlamadÄ±m'}];
+    cevapHtml='<div class="secenekler">'+opts.map((o,i)=>`<button class="sec-btn" onclick="sec(${i},this)"><span style="font-size:20px">${o.emoji||'â€¢'}</span><span>${o.metin||o}</span></button>`).join('')+'</div>';
   } else if(tip==='secmeli'){
     const opts=soru.secenekler||[];
     cevapHtml='<div class="secenekler">'+opts.map((o,i)=>`<button class="sec-btn" onclick="sec(${i},this)"><span class="harf">${harfler[i]}</span><span>${o}</span></button>`).join('')+'</div>';
   } else if(tip==='siralama'){
-    cevapHtml='<p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center">↑ ↓ butonlarıyla sıralayın</p><div class="siralama" id="sirListe">'+siraliOgeler.map((o,i)=>`<div class="sir-item" id="si-${i}"><div class="sir-no">${i+1}</div><div class="sir-text">${o}</div><div style="display:flex;flex-direction:column;gap:2px"><button onclick="sirTasi(${i},-1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">↑</button><button onclick="sirTasi(${i},1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">↓</button></div></div>`).join('')+'</div>';
+    cevapHtml='<p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center">â†‘ â†“ butonlarÄ±yla sÄ±ralayÄ±n</p><div class="siralama" id="sirListe">'+siraliOgeler.map((o,i)=>`<div class="sir-item" id="si-${i}"><div class="sir-no">${i+1}</div><div class="sir-text">${o}</div><div style="display:flex;flex-direction:column;gap:2px"><button onclick="sirTasi(${i},-1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">â†‘</button><button onclick="sirTasi(${i},1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">â†“</button></div></div>`).join('')+'</div>';
   } else if(tip==='cagrisim'){
-    cevapHtml='<label class="label">Aklınıza gelen kelimeleri ekleyin (max 5)</label><div class="chips" id="chips"></div><div class="chip-row"><input class="chip-inp" id="cinp" placeholder="Kelime..." maxlength="30" onkeydown="if(event.key===\'Enter\')ekle()"/><button class="chip-ekle" onclick="ekle()">Ekle</button></div>';
+    cevapHtml='<label class="label">AklÄ±nÄ±za gelen kelimeleri ekleyin (max 5)</label><div class="chips" id="chips"></div><div class="chip-row"><input class="chip-inp" id="cinp" placeholder="Kelime..." maxlength="30" onkeydown="if(event.key===\'Enter\')ekle()"/><button class="chip-ekle" onclick="ekle()">Ekle</button></div>';
   }
-  const isimHtml=isimSor?'<label class="label">Adınız Soyadınız</label><input class="f" id="isimInp" placeholder="Ali Yılmaz" maxlength="50"/>':'';
+  const isimHtml=isimSor?'<label class="label">AdÄ±nÄ±z SoyadÄ±nÄ±z</label><input class="f" id="isimInp" placeholder="Ali YÄ±lmaz" maxlength="50"/>':'';
   goster(`
     <div class="kart">
       <span class="kart-tip">${TIPLER[tip]||tip}</span>
@@ -146,7 +146,7 @@ function soruGoster(s,idx,toplam,isimSor){
     </div>
     ${isimHtml}
     ${cevapHtml}
-    <button class="btn" id="gBtn" onclick="gonder()">Gönder</button>
+    <button class="btn" id="gBtn" onclick="gonder()">GÃ¶nder</button>
   `);
 }
 
@@ -166,18 +166,18 @@ function sirTasi(i,yon){
   if(j<0||j>=siraliOgeler.length)return;
   const tmp=siraliOgeler[i];siraliOgeler[i]=siraliOgeler[j];siraliOgeler[j]=tmp;
   const l=document.getElementById('sirListe');
-  l.innerHTML=siraliOgeler.map((o,idx)=>`<div class="sir-item" id="si-${idx}"><div class="sir-no">${idx+1}</div><div class="sir-text">${o}</div><div style="display:flex;flex-direction:column;gap:2px"><button onclick="sirTasi(${idx},-1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">↑</button><button onclick="sirTasi(${idx},1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">↓</button></div></div>`).join('');
+  l.innerHTML=siraliOgeler.map((o,idx)=>`<div class="sir-item" id="si-${idx}"><div class="sir-no">${idx+1}</div><div class="sir-text">${o}</div><div style="display:flex;flex-direction:column;gap:2px"><button onclick="sirTasi(${idx},-1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">â†‘</button><button onclick="sirTasi(${idx},1)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:2px 7px;cursor:pointer;font-size:14px;line-height:1">â†“</button></div></div>`).join('');
 }
 
 async function gonder(){
-  // İsim
+  // Ä°sim
   const isimInp=document.getElementById('isimInp');
   if(isimInp){
     const v=isimInp.value.trim();
     if(!v){isimInp.focus();return;}
     isim=v;
   }
-  if(!isim){alert('Adınızı girin.');return;}
+  if(!isim){alert('AdÄ±nÄ±zÄ± girin.');return;}
   // Cevap
   const tip=mevcutSoru?.tip||'tanim';
   let cevap=null;
@@ -185,7 +185,7 @@ async function gonder(){
     cevap=document.getElementById('cevap')?.value?.trim();
     if(!cevap||cevap.length<3){document.getElementById('cevap')?.focus();return;}
   } else if(tip==='yoklama'||tip==='secmeli'){
-    if(secili===null){alert('Lütfen bir seçenek seçin.');return;}
+    if(secili===null){alert('LÃ¼tfen bir seÃ§enek seÃ§in.');return;}
     cevap=String(secili);
   } else if(tip==='siralama'){
     cevap=siraliOgeler.join('||');
@@ -194,13 +194,13 @@ async function gonder(){
     cevap=cagrisimler.join(',');
   }
   const btn=document.getElementById('gBtn');
-  btn.disabled=true;btn.textContent='Gönderiliyor...';
+  btn.disabled=true;btn.textContent='GÃ¶nderiliyor...';
   try{
     await responsesRef.push({name:isim,text:String(cevap),tip,soruIdx,oturumId:oturumId||'x',ts:Date.now()});
     gonderildi[soruIdx]=true;
-    goster('<div class="merkez"><div class="ikon">✅</div><div class="bas">Yanıtınız alındı!</div><div class="alt">Sonraki soru bekleniyor...</div></div>');
+    goster('<div class="merkez"><div class="ikon">âœ…</div><div class="bas">YanÄ±tÄ±nÄ±z alÄ±ndÄ±!</div><div class="alt">Sonraki soru bekleniyor...</div></div>');
   }catch(e){
-    btn.disabled=false;btn.textContent='Gönder';
+    btn.disabled=false;btn.textContent='GÃ¶nder';
     alert('Hata: '+e.message);
   }
 }
