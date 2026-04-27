@@ -386,7 +386,7 @@ function renderOrta(){
     <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Ekranda g\u00f6sterilecek kavram\u0131 se\u00e7in:</p>
     <div class="kavram-secici">`;
     kavramlar.forEach((k,i)=>{
-      html+=`<div class="kavram-btn ${seciliKavram===i?'secili':''}" onclick="kavramSec(${i},'${esc(k.isim)}','${esc(k.aciklama)}')">
+      html+=`<div class="kavram-btn ${seciliKavram===i?'secili':''}" data-idx="${i}" data-isim="${esc(k.isim)}" data-aciklama="${esc(k.aciklama)}" onclick="kavramSecEl(this)">
         <strong>${esc(k.isim)}</strong>${esc(k.aciklama)}
       </div>`;
     });
@@ -455,6 +455,12 @@ function asamaGec(asama){
   renderOrta();
 }
 
+function kavramSecEl(el){
+  const i=parseInt(el.dataset.idx);
+  const isim=el.dataset.isim;
+  const aciklama=el.dataset.aciklama;
+  kavramSec(i,isim,aciklama);
+}
 function kavramSec(i,isim,aciklama){
   seciliKavram=i;
   simRef.update({asama:'kavram',kavram:{isim,aciklama}});
