@@ -86,6 +86,7 @@ let db,simRef,oyRef;
 let isim='';
 let benimRolum=null;
 let mevcutDurum=null;
+let mevcutSahne=0;
 let gonderildi=false;
 let rolTalep=false;
 
@@ -192,6 +193,7 @@ function gosterRolDagitim(d){
 }
 
 function rolIste(){
+  if(!isim) return;
   db.ref('sim_rol_talep/'+d2key(isim)).set({isim,ts:Date.now()});
   rolTalep=true;
   if(mevcutDurum) gosterRolDagitim(mevcutDurum);
